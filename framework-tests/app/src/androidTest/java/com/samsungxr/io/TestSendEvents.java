@@ -7,10 +7,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.samsungxr.SXRContext;
-import com.samsungxr.SXREventListeners;
-import com.samsungxr.SXRScene;
-import com.samsungxr.unittestutils.SXRTestUtils;
-import com.samsungxr.unittestutils.SXRTestableActivity;
 
 import net.jodah.concurrentunit.Waiter;
 
