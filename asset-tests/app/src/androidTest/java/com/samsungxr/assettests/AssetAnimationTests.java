@@ -192,7 +192,8 @@ public class AssetAnimationTests
             mWaiter.fail(ex);
         }
         mTestUtils.waitForAssetLoad();
-        mHandler.checkAssetLoaded(null, 4);
+        mTestUtils.waitForXFrames(5);
+        mHandler.checkAssetLoaded(null, 1);
         mHandler.checkAssetErrors(0, 0);
         mWaiter.assertNull(model.getComponent(SXRAnimator.getComponentType()));
         model.forAllComponents(new MeshVisitorNoAnim(), SXRRenderData.getComponentType());
