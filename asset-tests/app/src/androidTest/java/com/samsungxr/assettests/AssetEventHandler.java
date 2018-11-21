@@ -161,7 +161,6 @@ class AssetEventHandler implements IAssetEvents
         mTester.waitForAssetLoad();
         checkAssetLoaded(FileNameUtils.getFilename(modelfile), numTex);
         checkAssetErrors(0, texError);
-        mTester.waitForXFrames(2);
         if (testname != null)
         {
             mTester.waitForXFrames(mWaitFrames);
