@@ -213,6 +213,8 @@ public class AssetImportTests
         sceneLoader.load(scene);
         mWaiter.assertNotNull(model);
         mTestUtils.waitForAssetLoad();
+        mTestUtils.waitForXFrames(4);
+        mHandler.centerModel(model, scene.getMainCameraRig().getTransform());
         mHandler.checkAssetLoaded("astro_boy.dae", 4);
         mHandler.checkAssetErrors(0, 0);
         mTestUtils.waitForXFrames(4);
