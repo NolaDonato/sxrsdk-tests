@@ -388,18 +388,21 @@ public class AssetImportTests
     @Test
     public void jassimpTrees3DS() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/trees/trees9.3ds", 8, 0, "jassimpTrees3DS");
     }
 
     @Test
     public void jassimpBenchCollada() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel("jassimp/bench.dae", 0, 0, "jassimpBenchCollada");
     }
 
     @Test
     public void jassimpHippoOBJ() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/hippo/hippo.obj", 1, 0, "jassimpHippoOBJ");
     }
 
@@ -407,25 +410,28 @@ public class AssetImportTests
     public void jassimpDeerOBJ() throws TimeoutException
     {
         SXRAndroidResource res = new SXRAndroidResource(mTestUtils.getSxrContext(), R.raw.deerobj);
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(res, 1, 0, "jassimpDeerOBJ");
     }
 
     @Test
     public void jassimpBearOBJ() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/animals/bear-obj.obj", 3, 0, "jassimpBearOBJ");
     }
 
     @Test
     public void jassimpWolfOBJ() throws TimeoutException
     {
-        mHandler.setWaitFrames(0);
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/animals/wolf-obj.obj", 3, 0, "jassimpWolfOBJ");
     }
 
     @Test
     public void jassimpSkinningTREX() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/trex/TRex_NoGround.fbx", 1, 0, "jassimpSkinningTREX");
     }
 
@@ -436,6 +442,7 @@ public class AssetImportTests
         SXRNode light2 = createLight(mTestUtils.getSxrContext(), 1, 1, 1, -0.8f);
         mRoot.addChildObject(light1);
         mRoot.addChildObject(light2);
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "/jassimp/gltf/WaterBottle/WaterBottle.gltf", 6, 0, "jassimpGlossWaterBottleGLTF");
     }
 
@@ -456,6 +463,7 @@ public class AssetImportTests
         lightObj.attachComponent(pointLight);
         lightObj.getTransform().setPosition(-1.0f, 1.0f, 0);
         scene.addNode(lightObj);
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/gltf/Telephone/Telephone.gltf", 4, 0, "jassimpTelephonePBRGLTF");
     }
 
@@ -476,18 +484,21 @@ public class AssetImportTests
         lightObj.attachComponent(pointLight);
         lightObj.getTransform().setPosition(-1.0f, 1.0f, 0);
         scene.addNode(lightObj);
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/gltf/cow/cow.gltf", 1, 0, "jassimpCowPBRGLTF");
     }
 
     @Test
     public void jassimpEngineBinaryGLTF() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/gltf/2CylinderEngine-glTF-Binary/2CylinderEngine.glb", 0, 0, "jassimpEngineBinaryGLTF");
     }
 
     @Test
     public void jassimpBoxEmbeddedGLTF() throws TimeoutException
     {
+        mHandler.setWaitFrames(4);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/gltf/BoxTextured-glTF-Embedded/BoxTextured.gltf", 1, 0, "jassimpBoxEmbeddedGLTF");
     }
 
