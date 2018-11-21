@@ -224,7 +224,7 @@ public class AssetLightTests
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "x3d/generate_normals/nonormalswithptlights.x3d", 2, 0, "x3dGenerateNormalsPoint");
     }
 
-    //@Test
+    @Test
     public void x3dShininess() throws TimeoutException
     {
         mHandler.setWaitFrames(4);
