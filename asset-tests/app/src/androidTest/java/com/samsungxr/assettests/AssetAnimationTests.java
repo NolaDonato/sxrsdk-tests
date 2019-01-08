@@ -246,9 +246,8 @@ public class AssetAnimationTests
         q.fromAxisAngleDeg(1, 0, 0, -45);
         pose.setLocalRotation(leftShoulder, q.x, q.y, q.z, q.w);
         pose.setLocalRotation(rightShoulder, q.x, q.y, q.z, q.w);
-        skel.applyPose(pose, SXRSkeleton.BIND_POSE_RELATIVE);
+        skel.applyPose(pose, SXRSkeleton.ROTATION_ONLY);
         skel.poseToBones();
-        skel.updateSkinPose();
 
         mTestUtils.waitForXFrames(2);
         mTestUtils.screenShot(getClass().getSimpleName(), "testSkeleton", mWaiter, mDoCompare);
@@ -299,7 +298,6 @@ public class AssetAnimationTests
         int rightElbow = skel.getBoneIndex("ElbowRight");
         int leftElbow = skel.getBoneIndex("ElbowLeft");
         int leftWrist = skel.getBoneIndex("WristLeft");
-        SXRPose bindpose = skel.getBindPose();
         SXRPose pose = skel.getPose();
 
         mWaiter.assertTrue(rightShoulder >= 0);
@@ -307,25 +305,24 @@ public class AssetAnimationTests
         mWaiter.assertTrue(rightElbow >= 0);
         mWaiter.assertTrue(leftElbow >= 0);
         q1.fromAxisAngleDeg(0, 0, 1, -45);
-        bindpose.getLocalRotation(leftShoulder, q2);
+        pose.getLocalRotation(leftShoulder, q2);
         q2.mul(q1);
         pose.setLocalRotation(leftShoulder, q2.x, q2.y, q2.z, q2.w);
-        bindpose.getLocalRotation(leftElbow, q2);
+        pose.getLocalRotation(leftElbow, q2);
         q2.mul(q1);
         pose.setLocalRotation(leftElbow, q2.x, q2.y, q2.z, q2.w);
-        bindpose.getLocalRotation(leftWrist, q2);
+        pose.getLocalRotation(leftWrist, q2);
         q2.mul(q1);
         pose.setLocalRotation(leftWrist, q2.x, q2.y, q2.z, q2.w);
 
-        bindpose.getLocalRotation(rightShoulder, q2);
+        pose.getLocalRotation(rightShoulder, q2);
         q1.invert();
         q2.mul(q1);
         pose.setLocalRotation(rightShoulder, q2.x, q2.y, q2.z, q2.w);
-        bindpose.getLocalRotation(rightElbow, q2);
+        pose.getLocalRotation(rightElbow, q2);
         q2.mul(q1);
         pose.setLocalRotation(rightElbow, q2.x, q2.y, q2.z, q2.w);
         skel.poseToBones();
-        skel.updateSkinPose();
 
         mTestUtils.waitForXFrames(2);
         mTestUtils.screenShot(getClass().getSimpleName(), "testSkeleton2", mWaiter, mDoCompare);
@@ -453,7 +450,7 @@ public class AssetAnimationTests
         float[] rotKeys = new float[] { 0, 0, 0, 0, 1,   2, 0, 0, 0, 1 };
         float[] posKeys = new float[] { 0, 0, 0, 0,      2, 0, 0, 0 };
 
-        pose.copy(skel.getBindPose());
+        pose.copy(skel.getPose());
         pose.getLocalMatrix(leftShoulderBone, mtx);
         mtx.getTranslation(v);
         mtx.getUnnormalizedRotation(q);
