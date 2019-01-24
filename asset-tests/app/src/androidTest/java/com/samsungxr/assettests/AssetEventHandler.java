@@ -149,7 +149,7 @@ class AssetEventHandler implements IAssetEvents
             float sf = 1 / r;
             model.getTransform().setScale(sf, sf, sf);
             cx /= r; cy /= r; cz /= r;
-            model.getTransform().setPosition(x - cx, y - cy, z - cz - 1.5f * r);
+            model.getTransform().setPosition(x - cx, y - cy, z - cz - 1.5f);
         }
         else
         {
@@ -166,7 +166,6 @@ class AssetEventHandler implements IAssetEvents
     public SXRNode loadTestModel(String modelfile, int numTex, int texError, String testname) throws TimeoutException
     {
         SXRContext ctx  = mTester.getSxrContext();
-        SXRScene scene = mTester.getMainScene();
         SXRNode model = null;
 
         try

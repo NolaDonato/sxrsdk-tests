@@ -116,19 +116,7 @@ public class AssetAnimationTests
         mHandler.checkAssetLoaded(null, 4);
         mHandler.checkAssetErrors(0, 0);
         mWaiter.assertNotNull(scene.getNodeByName("astro_boy.dae"));
-
-        SXRNode.BoundingVolume bv = model.getBoundingVolume();
-        Matrix4f skelMtx = skel.getBone(0).getTransform().getModelMatrix4f();
-        Vector3f scale = new Vector3f();
-        float sf;
-
-        skelMtx.getScale(scale);            // get scaling on root bone of skeleton
-        sf = 1.0f / (scale.x * bv.radius);  // scale the meshes to remove root scale
-        skelMtx.getTranslation(pos);
-        pos.mul(sf);                        // position feet at 0,0,-1
-        model.getTransform().setScale(sf, sf, sf);
-        model.getTransform().setPosition(-bv.center.x / sf, -bv.minCorner.y / sf, -scale.x);
-
+        mHandler.centerModel(model);
         mTestUtils.waitForXFrames(2);
         mTestUtils.screenShot(getClass().getSimpleName(), "canStartAnimations", mWaiter, mDoCompare);
     }
@@ -421,6 +409,8 @@ public class AssetAnimationTests
         }
         mTestUtils.waitForAssetLoad();
         mWaiter.assertNotNull(scene.getNodeByName("Andromeda.dae"));
+        mHandler.centerModel(model);
+
         List<SXRComponent> components = model.getAllComponents(SXRSkeleton.getComponentType());
 
         mWaiter.assertTrue(components.size() > 0);
