@@ -15,7 +15,9 @@ import com.samsungxr.unittestutils.SXRTestUtils;
 import com.samsungxr.utility.FileNameUtils;
 import com.samsungxr.utility.Log;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.io.IOException;
 import java.util.List;
@@ -98,7 +100,7 @@ class AssetEventHandler implements IAssetEvents
         TextureErrors++;
     }
 
-    public void DisableImageCompare()
+    public void disableImageCompare()
     {
         mDoCompare = false;
     }
@@ -141,14 +143,31 @@ class AssetEventHandler implements IAssetEvents
 
         if (skeletons.size() > 0)
         {
+            SXRSkeleton skel = skeletons.get(0);
+            SXRNode bone = skel.getBone(0);
+            Matrix4f mtx1 = bone.getTransform().getModelMatrix4f();
+            Matrix4f mtx2 = new Matrix4f();
             float[] bv = skeletons.get(0).getBound();
-            float cx = (bv[3] + bv[0]) / 2.0f;
-            float cy = (bv[4] + bv[1]) / 2.0f;
-            float cz = (bv[5] + bv[2]) / 2.0f;
-            float r = Math.max(bv[3] - bv[0], Math.max(bv[4] - bv[1], bv[5] - bv[2]));
-            float sf = 1 / r;
+            Vector4f cmin = new Vector4f(bv[0], bv[1], bv[2], 1);
+            Vector4f cmax = new Vector4f(bv[3], bv[4], bv[5], 1);
+
+            skel.getPose().getLocalMatrix(0, mtx2);
+            mtx2.invert(mtx2);
+            mtx1.mul(mtx2, mtx2);
+            cmin.mul(mtx2);
+            cmax.mul(mtx2);
+
+            float cx = (cmax.x + cmin.x) / 2;
+            float cy = (cmax.y + cmin.y) / 2;
+            float cz = (cmax.z + cmin.z) / 2;
+            float r = Math.max(cmax.x - cmin.x,
+                               Math.max(cmax.y - cmin.y,
+                                        cmax.z - cmin.z));
+            float sf = 0.5f / r;
             model.getTransform().setScale(sf, sf, sf);
-            cx /= r; cy /= r; cz /= r;
+            cx *= sf;
+            cy *= sf;
+            cz *= sf;
             model.getTransform().setPosition(x - cx, y - cy, z - cz - 1.5f);
         }
         else
@@ -158,7 +177,7 @@ class AssetEventHandler implements IAssetEvents
             mWaiter.assertTrue((sf > 0.00001f) && (sf < 100000.0f));
             model.getTransform().setScale(sf, sf, sf);
             bv = model.getBoundingVolume();
-            model.getTransform().setPosition(x - bv.center.x, y - bv.center.y, z - bv.center.z - 1.5f * bv.radius);
+            model.getTransform().setPosition(x - bv.center.x, y - bv.center.y, z - bv.center.z - 1.5f);
         }
     }
 

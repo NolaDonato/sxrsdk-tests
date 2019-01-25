@@ -52,7 +52,7 @@ public class AssetAnimationTests
     private Waiter mWaiter;
     private SXRNode mRoot;
     private SXRNode mBackground;
-    private boolean mDoCompare = true;
+    private boolean mDoCompare = false;
     private AssetEventHandler mHandler;
 
     @Rule
@@ -86,6 +86,10 @@ public class AssetAnimationTests
         mRoot = scene.getRoot();
         mWaiter.assertNotNull(mRoot);
         mHandler = new AssetEventHandler(scene, mWaiter, mTestUtils, getClass().getSimpleName());
+        if (!mDoCompare)
+        {
+            mHandler.disableImageCompare();
+        }
     }
 
     @Test
@@ -392,16 +396,17 @@ public class AssetAnimationTests
         SXRScene scene = mTestUtils.getMainScene();
         SXRNode model = null;
         SXRCameraRig rig = scene.getMainCameraRig();
+        EnumSet<SXRImportSettings> settings = SXRImportSettings.getRecommendedSettingsWith(
+            EnumSet.of(SXRImportSettings.NO_MORPH));
 
         rig.getLeftCamera().setBackgroundColor(Color.LTGRAY);
         rig.getRightCamera().setBackgroundColor(Color.LTGRAY);
-        rig.getTransform().rotateByAxis(0, 1, 0, 90);
-
         ctx.getEventReceiver().addListener(mHandler);
         mHandler.setWaitFrames(0);
         try
         {
-            model = ctx.getAssetLoader().loadModel(SXRTestUtils.GITHUB_URL + "jassimp/Andromeda/Andromeda.dae", scene);
+            model = ctx.getAssetLoader().loadModel(SXRTestUtils.GITHUB_URL + "jassimp/Andromeda/Andromeda.dae",
+                                                   settings, true, scene);
         }
         catch (IOException ex)
         {
@@ -409,7 +414,6 @@ public class AssetAnimationTests
         }
         mTestUtils.waitForAssetLoad();
         mWaiter.assertNotNull(scene.getNodeByName("Andromeda.dae"));
-        mHandler.centerModel(model);
 
         List<SXRComponent> components = model.getAllComponents(SXRSkeleton.getComponentType());
 

@@ -56,16 +56,21 @@ public class AssetLightTests
         mTestUtils.waitForOnInit();
         mWaiter = new Waiter();
 
-        SXRContext ctx  = mTestUtils.getSxrContext();
+        SXRContext ctx = mTestUtils.getSxrContext();
         SXRScene scene = mTestUtils.getMainScene();
 
         mWaiter.assertNotNull(scene);
-        mBackground = new SXRCubeNode(ctx, false, new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID));
+        mBackground =
+            new SXRCubeNode(ctx, false, new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID));
         mBackground.getTransform().setScale(10, 10, 10);
         mBackground.setName("background");
         mRoot = scene.getRoot();
         mWaiter.assertNotNull(mRoot);
         mHandler = new AssetEventHandler(scene, mWaiter, mTestUtils, getClass().getSimpleName());
+        if (!mDoCompare)
+        {
+            mHandler.disableImageCompare();
+        }
     }
 
     @Test

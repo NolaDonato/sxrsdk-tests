@@ -69,16 +69,21 @@ public class AssetImportTests
         mTestUtils.waitForOnInit();
         mWaiter = new Waiter();
 
-        SXRContext ctx  = mTestUtils.getSxrContext();
+        SXRContext ctx = mTestUtils.getSxrContext();
         SXRScene scene = mTestUtils.getMainScene();
 
         mWaiter.assertNotNull(scene);
-        mBackground = new SXRCubeNode(ctx, false, new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID));
+        mBackground =
+            new SXRCubeNode(ctx, false, new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID));
         mBackground.getTransform().setScale(10, 10, 10);
         mBackground.setName("background");
         mRoot = scene.getRoot();
         mWaiter.assertNotNull(mRoot);
         mHandler = new AssetEventHandler(scene, mWaiter, mTestUtils, getClass().getSimpleName());
+        if (!mDoCompare)
+        {
+            mHandler.disableImageCompare();
+        }
     }
 
     @Test
@@ -88,8 +93,7 @@ public class AssetImportTests
         SXRScene scene = mTestUtils.getMainScene();
         SXRNode model = null;
         String baseName = "astro_boy.dae";
-        String filePath = "jassimp/astro_boy.dae";
-        //String baseName = "TRex_NoGround.fbx";
+        String filePath = "jassimp/astro_boy.dae";//String baseName = "TRex_NoGround.fbx";
         //String filePath = SXRTestUtils.GITHUB_URL + "jassimp/trex/TRex_NoGround.fbx";
         EnumSet<SXRImportSettings> settings = SXRImportSettings.getRecommendedSettingsWith(EnumSet.of(SXRImportSettings.NO_ANIMATION));
         ctx.getEventReceiver().addListener(mHandler);
