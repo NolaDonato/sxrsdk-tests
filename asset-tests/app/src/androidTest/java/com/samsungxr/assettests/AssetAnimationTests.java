@@ -10,6 +10,7 @@ import net.jodah.concurrentunit.Waiter;
 import com.samsungxr.SXRCameraRig;
 import com.samsungxr.SXRComponent;
 import com.samsungxr.SXRContext;
+import com.samsungxr.SXRDirectLight;
 import com.samsungxr.SXRImportSettings;
 import com.samsungxr.SXRMaterial;
 import com.samsungxr.SXRMesh;
@@ -401,6 +402,7 @@ public class AssetAnimationTests
 
         rig.getLeftCamera().setBackgroundColor(Color.LTGRAY);
         rig.getRightCamera().setBackgroundColor(Color.LTGRAY);
+        rig.getCenterCamera().setBackgroundColor(Color.LTGRAY);
         ctx.getEventReceiver().addListener(mHandler);
         mHandler.setWaitFrames(0);
         try
@@ -503,6 +505,23 @@ public class AssetAnimationTests
         skelAnim.addChannel("mixamorig_LeftShoulder", leftShoulder);
         skelAnim.addChannel("mixamorig_RightShoulder", rightShoulder);
         return skelAnim;
+    }
+
+    @Test
+    public void jassimpSkinGLTF() throws TimeoutException
+    {
+        SXRContext ctx  = mTestUtils.getSxrContext();
+        SXRScene scene = mTestUtils.getMainScene();
+        SXRDirectLight light = new SXRDirectLight(ctx);
+        SXRCameraRig rig = scene.getMainCameraRig();
+
+        rig.getLeftCamera().setBackgroundColor(Color.LTGRAY);
+        rig.getRightCamera().setBackgroundColor(Color.LTGRAY);
+        rig.getCenterCamera().setBackgroundColor(Color.LTGRAY);
+        light.setDiffuseIntensity(1, 1, 1, 1);
+        rig.getOwnerObject().attachComponent(light);
+        mHandler.setWaitFrames(4);
+        mHandler.loadTestModel("jassimp/maleOutfitJ.glb", 1, 0, "jassimpSkinGLTF");
     }
 
 }
