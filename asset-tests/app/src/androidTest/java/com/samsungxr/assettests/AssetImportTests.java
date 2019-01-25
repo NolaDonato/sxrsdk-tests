@@ -88,8 +88,7 @@ public class AssetImportTests
         SXRScene scene = mTestUtils.getMainScene();
         SXRNode model = null;
         String baseName = "astro_boy.dae";
-        String filePath = "jassimp/astro_boy.dae";
-        //String baseName = "TRex_NoGround.fbx";
+        String filePath = "jassimp/astro_boy.dae";//String baseName = "TRex_NoGround.fbx";
         //String filePath = SXRTestUtils.GITHUB_URL + "jassimp/trex/TRex_NoGround.fbx";
         EnumSet<SXRImportSettings> settings = SXRImportSettings.getRecommendedSettingsWith(EnumSet.of(SXRImportSettings.NO_ANIMATION));
         ctx.getEventReceiver().addListener(mHandler);
