@@ -53,7 +53,7 @@ public class AssetAnimationTests
     private Waiter mWaiter;
     private SXRNode mRoot;
     private SXRNode mBackground;
-    private boolean mDoCompare = false;
+    private boolean mDoCompare = true;
     private AssetEventHandler mHandler;
 
     @Rule
@@ -397,8 +397,11 @@ public class AssetAnimationTests
         SXRScene scene = mTestUtils.getMainScene();
         SXRNode model = null;
         SXRCameraRig rig = scene.getMainCameraRig();
-        EnumSet<SXRImportSettings> settings = SXRImportSettings.getRecommendedSettingsWith(
-            EnumSet.of(SXRImportSettings.NO_MORPH));
+        EnumSet<SXRImportSettings> settings = EnumSet.of(SXRImportSettings.TRIANGULATE,
+                SXRImportSettings.FLIP_UV,
+                SXRImportSettings.LIMIT_BONE_WEIGHT,
+                SXRImportSettings.SORTBY_PRIMITIVE_TYPE,
+                SXRImportSettings.NO_MORPH);
 
         rig.getLeftCamera().setBackgroundColor(Color.LTGRAY);
         rig.getRightCamera().setBackgroundColor(Color.LTGRAY);
