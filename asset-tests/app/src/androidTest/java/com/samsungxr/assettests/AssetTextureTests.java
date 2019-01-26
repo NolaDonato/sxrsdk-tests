@@ -113,7 +113,6 @@ public class AssetTextureTests
         mtl.setDiffuseColor(1.0f, 1.0f, 0.7f, 1.0f);
         backgnd.getTransform().setScale(10, 10, 10);
         mTestUtils.getMainScene().addNode(backgnd);
-        mHandler.setWaitFrames(4);
         mHandler.setWaitFrames(8);
         mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/bmw/bmw.FBX", 20, 1, "jassimpEmbeddedTextures");
     }
