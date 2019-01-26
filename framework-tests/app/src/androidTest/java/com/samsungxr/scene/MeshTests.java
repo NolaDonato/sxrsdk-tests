@@ -709,7 +709,7 @@ public class MeshTests
         cyl1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
         moveVertices(cyl2.getRenderData().getMesh().getVertexBuffer(), 2, 0, 0);
         cyl2.getRenderData().getMaterial().setDiffuseColor(0, 0, 1, 1);
-        curPose.setWorldPositions(new float[] { 0, -1, 0, -2, 0, 0, 2, 0, 0 });
+        curPose.setWorldPositions(new float[] { 0, 1, 0, -2, 2, 0, 2, 2, 0 });
         cyl1.attachComponent(skin1);
         cyl2.attachComponent(skin2);
         root.addChildObject(cyl1);
