@@ -403,9 +403,6 @@ public class AssetAnimationTests
                 SXRImportSettings.SORTBY_PRIMITIVE_TYPE,
                 SXRImportSettings.NO_MORPH);
 
-        rig.getLeftCamera().setBackgroundColor(Color.LTGRAY);
-        rig.getRightCamera().setBackgroundColor(Color.LTGRAY);
-        rig.getCenterCamera().setBackgroundColor(Color.LTGRAY);
         ctx.getEventReceiver().addListener(mHandler);
         mHandler.setWaitFrames(0);
         try
