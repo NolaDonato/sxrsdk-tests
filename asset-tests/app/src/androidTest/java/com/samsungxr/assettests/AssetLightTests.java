@@ -84,7 +84,7 @@ public class AssetLightTests
     public void jassimpCubeDiffusePoint() throws TimeoutException
     {
         mHandler.setWaitFrames(4);
-        mHandler.loadTestModel("jassimp/cube_diffuse_pointlight.fbx", 1, 0, "jassimpCubeDiffusePoint");
+        mHandler.loadTestModel(SXRTestUtils.GITHUB_URL + "jassimp/cube/cube_diffuse_pointlight.fbx", 1, 0, "jassimpCubeDiffusePoint");
     }
 
     @Test
