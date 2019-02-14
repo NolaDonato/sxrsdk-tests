@@ -10,6 +10,7 @@ import com.samsungxr.SXRCameraRig;
 import com.samsungxr.SXRMeshMorph;
 import com.samsungxr.SXRNotifications;
 import com.samsungxr.SXRPointLight;
+import com.samsungxr.SXRRenderData;
 import com.samsungxr.animation.SXRPose;
 import com.samsungxr.animation.SXRSkeleton;
 import com.samsungxr.animation.SXRSkin;
@@ -424,6 +425,7 @@ public class MeshTests
          */
         SXRVertexBuffer vbuf = cyl.getRenderData().getMesh().getVertexBuffer();
 
+        cyl.getRenderData().setRenderingOrder(SXRRenderData.SXRRenderingOrder.TRANSPARENT);
         int nverts = vbuf.getVertexCount();
         int vertsPerStack = nverts / cylparams.StackNumber;
         int[] boneIndices = new int[nverts * 4];
@@ -927,10 +929,10 @@ public class MeshTests
         morph.setBlendShape(0, blendShape1);
         morph.setBlendShape(1, blendShape2);
         morph.update();
-        morph.setWeights(weights);
         lightObj.attachComponent(light);
         scene.addNode(lightObj);
         scene.addNode(baseShape);
+        morph.setWeights(weights);
         mTestUtils.waitForXFrames(2);
         mTestUtils.screenShot(getClass().getSimpleName(), "testMorphTwoShapes", mWaiter, true);
     }

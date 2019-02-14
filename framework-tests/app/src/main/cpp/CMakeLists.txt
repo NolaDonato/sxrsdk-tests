@@ -6,8 +6,8 @@ add_library(framework-tests SHARED helpers.cpp)
 
 include_directories(${INCLUDE_DIR}/framework/src/main/jni)
 include_directories(${INCLUDE_DIR}/framework/src/main/jni/contrib)
-include_directories(${INCLUDE_DIR}/../../GearVRf/GVRf/Framework/framework/src/main/jni)
-include_directories(${INCLUDE_DIR}/../../GearVRf/GVRf/Framework/framework/src/main/jni/contrib)
+include_directories(${INCLUDE_DIR}/../../GearVRf/SXRf/Framework/framework/src/main/jni)
+include_directories(${INCLUDE_DIR}/../../GearVRf/SXRf/Framework/framework/src/main/jni/contrib)
 
 string(TOLOWER ${CMAKE_BUILD_TYPE} buildType)
 
