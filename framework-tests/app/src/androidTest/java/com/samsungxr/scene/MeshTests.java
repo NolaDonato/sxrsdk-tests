@@ -929,10 +929,10 @@ public class MeshTests
         morph.setBlendShape(0, blendShape1);
         morph.setBlendShape(1, blendShape2);
         morph.update();
-        morph.setWeights(weights);
         lightObj.attachComponent(light);
         scene.addNode(lightObj);
         scene.addNode(baseShape);
+        morph.setWeights(weights);
         mTestUtils.waitForXFrames(2);
         mTestUtils.screenShot(getClass().getSimpleName(), "testMorphTwoShapes", mWaiter, true);
     }
