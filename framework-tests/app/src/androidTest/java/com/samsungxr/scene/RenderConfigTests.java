@@ -19,6 +19,7 @@ import com.samsungxr.shaders.SXRColorBlendShader;
 import com.samsungxr.unittestutils.SXRTestUtils;
 import com.samsungxr.unittestutils.SXRTestableActivity;
 import com.samsungxr.sdktests.R;
+import com.samsungxr.utility.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -189,9 +190,12 @@ public class RenderConfigTests {
                 {
                     public void setRoot(SXRNode root)
                     {
+                        root.getNodeByName("quadObj").getRenderData().setRenderingOrder(
+                            SXRRenderData.SXRRenderingOrder.BACKGROUND);
                         root.getNodeByName("quadObj").getRenderData().setDepthTest(false);
                         root.getNodeByName("quadObj2").getRenderData().setDepthTest(false);
                         super.setRoot(root);
+                        Log.v("RENDER", "setDepthTest(false)");
                     }
                 });
         }
@@ -208,6 +212,7 @@ public class RenderConfigTests {
             {
                 mainScene.getNodeByName("quadObj").getRenderData().setDepthTest(true);
                 mainScene.getNodeByName("quadObj2").getRenderData().setDepthTest(true);
+                Log.v("RENDER", "setDepthTest(true)");
             }
         });
 
