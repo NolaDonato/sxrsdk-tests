@@ -1,4 +1,4 @@
-package com.samsungxr.tester;
+package com.samsungxr.physics;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -55,8 +55,8 @@ public class RigidBodyAttributesTest {
 
     @Test
     public void createRigidBody() throws Exception {
-        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.5f, 40.0f, -10.0f, 2.5f);
+        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.5f, 40.0f, -10.0f);
         mWaiter.assertTrue(mSphereRigidBody.getMass() == 2.5f);
         mWaiter.assertTrue(mSphereRigidBody.getRestitution() == 1.5f);
         mWaiter.assertTrue(mSphereRigidBody.getFriction() == 0.5f);
@@ -64,11 +64,11 @@ public class RigidBodyAttributesTest {
 
     @Test
     public void enableRigidBody() throws Exception {
-        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.0f, 10.0f, -10.0f, 2.5f);
+        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.0f, 10.0f, -10.0f);
 
-        SXRRigidBody mSphereRigidBody2 = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody2, 1.0f, 2.0f, 10.0f, -10.0f, 2.5f);
+        SXRRigidBody mSphereRigidBody2 = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody2, 1.0f, 2.0f, 10.0f, -10.0f);
 
         sxrTestUtils.waitForXFrames(10);
 
@@ -106,8 +106,7 @@ public class RigidBodyAttributesTest {
         return object;
     }
 
-    private void addSphere(SXRScene scene, SXRRigidBody sphereRigidBody, float radius, float x, float y,
-                           float z, float mass) {
+    private void addSphere(SXRScene scene, SXRRigidBody sphereRigidBody, float radius, float x, float y, float z) {
 
         SXRNode sphereObject = meshWithTexture("sphere.obj",
                 "sphere.jpg");
@@ -119,7 +118,6 @@ public class RigidBodyAttributesTest {
         sphereObject.attachCollider(sphereCollider);
 
         // Physics body
-        sphereRigidBody.setMass(mass);
         sphereRigidBody.setRestitution(1.5f);
         sphereRigidBody.setFriction(0.5f);
 

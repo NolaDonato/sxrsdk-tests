@@ -1,4 +1,4 @@
-package com.samsungxr.tester;
+package com.samsungxr.physics;
 
 import android.support.test.rule.ActivityTestRule;
 
@@ -304,8 +304,7 @@ public class PhysicsConstraintTest {
         sphereObject.attachCollider(sphereCollider);
 
         // Physics body
-        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        mSphereRigidBody.setMass(mass);
+        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
 
         sphereObject.attachComponent(mSphereRigidBody);
 
@@ -336,8 +335,7 @@ public class PhysicsConstraintTest {
         cubeObject.attachCollider(boxCollider);
 
         // Physics body
-        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        body.setMass(mass);
+        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
         body.setSimulationType(SXRRigidBody.KINEMATIC);
 
         cubeObject.attachComponent(body);
@@ -357,8 +355,7 @@ public class PhysicsConstraintTest {
         boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
         groundObject.attachCollider(boxCollider);
 
-        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext());
-        body.setMass(0f);
+        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0);
         groundObject.attachComponent(body);
 
         scene.addNode(groundObject);

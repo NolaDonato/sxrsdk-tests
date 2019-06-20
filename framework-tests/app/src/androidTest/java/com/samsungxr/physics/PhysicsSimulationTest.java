@@ -1,4 +1,4 @@
-package com.samsungxr.tester;
+package com.samsungxr.physics;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -83,19 +83,19 @@ public class PhysicsSimulationTest {
             objects[i].attachCollider(boxCollider);
             bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext());
             switch (i) {
-                case 0 : bodies[i].setMass(0.0f); //object moves, rigid body doesn't
+                case 0 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0); //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 2 : bodies[i].setMass(1.0f);  //rigidbody is a "trigger  collider"
+                case 2 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f);  //rigidbody is a "trigger  collider"
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 4 : bodies[i].setMass(0.0f);  //object moves, rigid body doesn't
+                case 4 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);  //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 6 : bodies[i].setMass(1.0f); //rigid body is "sleeping", until it is hit by another
+                case 6 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is "sleeping", until it is hit by another
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 8 : bodies[i].setMass(1.0f); //rigid body is obbeys all external forces
+                case 8 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is obbeys all external forces
                          bodies[i].setSimulationType(SXRRigidBody.DYNAMIC);
                          break;
             }
@@ -433,9 +433,8 @@ public class PhysicsSimulationTest {
         sphereObject.attachCollider(sphereCollider);
 
         // Physics body
-        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext());
+        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
 
-        mSphereRigidBody.setMass(mass);
         sphereObject.getEventReceiver().addListener(mCollisionHandler);
 
         sphereObject.attachComponent(mSphereRigidBody);
@@ -467,9 +466,7 @@ public class PhysicsSimulationTest {
         cubeObject.attachCollider(boxCollider);
 
         // Physics body
-        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext());
-
-        body.setMass(mass);
+        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
 
         cubeObject.attachComponent(body);
 
