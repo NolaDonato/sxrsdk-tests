@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class PhysicsConstraintTest {
-
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
     SXRWorld world;
@@ -50,22 +49,19 @@ public class PhysicsConstraintTest {
     @Before
     public void setUp() throws TimeoutException {
         mWaiter = new Waiter();
-
-        SXRTestUtils.OnInitCallback initCallback = new SXRTestUtils.OnInitCallback() {
-            @Override
-            public void onInit(SXRContext sxrContext) {
-                sxrContext.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
-                world = new SXRWorld(sxrContext);
-                sxrContext.getMainScene().getRoot().attachComponent(world);
-            }
-        };
-
-        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity(), initCallback);
+        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
+        SXRContext ctx = sxrTestUtils.getSxrContext();
+        ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
+        world = new SXRWorld(ctx);
+        ctx.getMainScene().getRoot().attachComponent(world);
     }
 
     @Test
     public void fixedConstraintTest() throws Exception {
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        world.getEventReceiver().addListener(listener);
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
 
         SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 0f, 0.5f, -30f, 1.0f);
@@ -77,7 +73,7 @@ public class PhysicsConstraintTest {
         SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), (SXRRigidBody)box2.getComponent(SXRRigidBody.getComponentType()));
         box1.attachComponent(constraint);
 
-        sxrTestUtils.waitForXFrames(30);
+        sxrTestUtils.waitForAssetLoad();
         float distance = transformsDistance(box1.getTransform(), box2.getTransform());
 
         ((SXRRigidBody)box1.getComponent(SXRRigidBody.getComponentType())).applyTorque(0, 0, 200);
@@ -104,6 +100,9 @@ public class PhysicsConstraintTest {
         float pivotInA[] = {0f, -1.5f, 0f};
         float pivotInB[] = {-8f, -1.5f, 0f};
 
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        world.getEventReceiver().addListener(listener);
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0.0f, 10.0f, -10.0f, 0.0f);
         SXRNode box = addCube(sxrTestUtils.getMainScene(), 8.0f, 10.0f, -10.0f, 1.0f);
         ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).setSimulationType(SXRRigidBody.DYNAMIC);
@@ -111,9 +110,7 @@ public class PhysicsConstraintTest {
         SXRPoint2PointConstraint constraint = new SXRPoint2PointConstraint(sxrTestUtils.getSxrContext(), (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType()), pivotInA, pivotInB);
         ball.attachComponent(constraint);
 
-        sxrTestUtils.waitForXFrames(30);
-
-        sxrTestUtils.waitForXFrames(60);
+        sxrTestUtils.waitForAssetLoad();
         float distance = transformsDistance(ball.getTransform(), box.getTransform());
         mWaiter.assertTrue(distance < 9.8);
 
@@ -130,6 +127,10 @@ public class PhysicsConstraintTest {
         float pivotInB[] = {0f, 3f, 0f};
         float axisInA[] = {1f, 0f, 0f};
         float axisInB[] = {1f, 0f, 0f};
+
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        world.getEventReceiver().addListener(listener);
 
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0.0f, 10.0f, -10.0f, 0.0f);
         SXRNode box = addCube(sxrTestUtils.getMainScene(), 0.0f, 4.0f, -10.0f, 1.0f);
@@ -172,6 +173,10 @@ public class PhysicsConstraintTest {
 
     @Test
     public void sliderConstraintTest() throws Exception {
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        world.getEventReceiver().addListener(listener);
+
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
 
         SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 0.5f, -15.0f, 1.0f);
@@ -205,6 +210,10 @@ public class PhysicsConstraintTest {
 
     @Test
     public void ConeTwistConstraintTest() throws Exception {
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        world.getEventReceiver().addListener(listener);
+
         SXRNode box = addCube(sxrTestUtils.getMainScene(), 0f, -5f, -15f, 0f);
 
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5f, -15f, 1f);
@@ -231,6 +240,10 @@ public class PhysicsConstraintTest {
 
     @Test
     public void GenericConstraintTest() throws Exception {
+        mWaiter.assertNotNull(world);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        world.getEventReceiver().addListener(listener);
+
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -0.5f, -15f);
 
         SXRNode box = addCube(sxrTestUtils.getMainScene(), -3f, 0f, -10f, 1f);
@@ -355,7 +368,7 @@ public class PhysicsConstraintTest {
         boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
         groundObject.attachCollider(boxCollider);
 
-        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0);
+        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
         groundObject.attachComponent(body);
 
         scene.addNode(groundObject);

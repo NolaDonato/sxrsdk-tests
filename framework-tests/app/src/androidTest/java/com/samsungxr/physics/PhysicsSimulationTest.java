@@ -14,9 +14,6 @@ import com.samsungxr.SXRScene;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRSphereCollider;
 import com.samsungxr.SXRTexture;
-import com.samsungxr.physics.SXRRigidBody;
-import com.samsungxr.physics.SXRWorld;
-import com.samsungxr.physics.ICollisionEvents;
 import com.samsungxr.unittestutils.SXRTestUtils;
 import com.samsungxr.unittestutils.SXRTestableActivity;
 import com.samsungxr.utility.Log;
@@ -54,22 +51,18 @@ public class PhysicsSimulationTest {
     @Before
     public void setUp() throws TimeoutException {
         mWaiter = new Waiter();
-
-        SXRTestUtils.OnInitCallback initCallback = new SXRTestUtils.OnInitCallback() {
-            @Override
-            public void onInit(SXRContext sxrContext) {
-                sxrContext.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
-                world = new SXRWorld(sxrContext);
-                sxrContext.getMainScene().getRoot().attachComponent(world);
-            }
-        };
-
-        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity(), initCallback);
+        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
+        SXRContext ctx = sxrTestUtils.getSxrContext();
+        ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
+        world = new SXRWorld(ctx);
+        ctx.getMainScene().getRoot().attachComponent(world);
     }
 
     @Test
     public void updatedOwnerTransformTest() throws Exception {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 10);
+        world.getEventReceiver().addListener(listener);
         addGroundMesh(sxrTestUtils.getMainScene(), 0.0f,0.0f,0.0f, 0.0f);
 
         SXRNode[] objects = new SXRNode[10];
@@ -81,21 +74,20 @@ public class PhysicsSimulationTest {
             objects[i] = meshWithTexture("cube.obj", "cube.jpg");
             objects[i].getTransform().setPosition(0.0f -i, 6.0f, -10.0f - (2.0f*i));
             objects[i].attachCollider(boxCollider);
-            bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext());
             switch (i) {
-                case 0 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0); //object moves, rigid body doesn't
+                case 0 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext()); //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 2 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f);  //rigidbody is a "trigger  collider"
+                case 2 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f);  //rigidbody is a "trigger  collider"
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 4 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);  //object moves, rigid body doesn't
+                case 4 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext());  //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 6 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is "sleeping", until it is hit by another
+                case 6 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is "sleeping", until it is hit by another
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 8 : new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is obbeys all external forces
+                case 8 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is obbeys all external forces
                          bodies[i].setSimulationType(SXRRigidBody.DYNAMIC);
                          break;
             }
@@ -114,8 +106,8 @@ public class PhysicsSimulationTest {
 
         }
 
+        sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(47);
-
         for(int i = 0; i < 5; i++) {
             objects[i*2].getTransform().setPositionX(2.0f);
         }
@@ -152,6 +144,8 @@ public class PhysicsSimulationTest {
 
     @Test
     public void freeFallTest() throws Exception {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
+        world.getEventReceiver().addListener(listener);
         CollisionHandler mCollisionHandler = new CollisionHandler();
         mCollisionHandler.extimatedTime = 2800; //... + round up
         mCollisionHandler.collisionCounter = 0;
@@ -160,11 +154,8 @@ public class PhysicsSimulationTest {
         SXRNode sphere = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler, 0.0f, 40.0f, -10.0f, 1.0f);
 
         mCollisionHandler.startTime = System.currentTimeMillis();
+        sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(168);
-
-        //Log.d("PHYSICS", "    Delta time of the last collisions:" + mCollisionHandler.lastCollisionTime);
-        //mWaiter.assertTrue(mCollisionHandler.lastCollisionTime <= mCollisionHandler.extimatedTime);
-
         float d = (sphere.getTransform().getPositionY() - cube.getTransform().getPositionY()); //sphere is on top of the cube
         mWaiter.assertTrue( d <= 1.6f);
         //Log.d("PHYSICS", "    Number of collisions:" + mCollisionHandler.collisionCounter);
@@ -173,50 +164,21 @@ public class PhysicsSimulationTest {
 
     @Test
     public void spacedFreeFallTest() throws Exception {
-        OnTestStartRenderCallback beginCallback = new OnTestStartRenderCallback();
-        sxrTestUtils.setOnRenderCallback(beginCallback);
-
-        for(int i = 0; i < beginCallback.lenght; i++) {
-            sxrTestUtils.waitForSceneRendering();
-            sxrTestUtils.waitForXFrames(1);
-        }
-        sxrTestUtils.waitForSceneRendering();
-        sxrTestUtils.setOnRenderCallback(null);
-
-        beginCallback.mCollisionHandler.startTime = System.currentTimeMillis();
+        CollisionTest collisionTest = new CollisionTest(100);
+        collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
         sxrTestUtils.waitForXFrames(168);
-
-        runTest(beginCallback.sphere, beginCallback.cube, beginCallback.lenght);
-
-        //It is complicated to try to predict this timing depends on the device state, should be almost the same as the above
-        //Log.d("PHYSICS", "    Delta time of the last collisions:" + beginCallback.mCollisionHandler.lastCollisionTime);
-        //mWaiter.assertTrue(beginCallback.mCollisionHandler.lastCollisionTime <= beginCallback.mCollisionHandler.extimatedTime);
-
-        //asserts can not happen on collision event, but we get an idea here
-        //Log.d("PHYSICS", "    Number of collisions:" + beginCallback.mCollisionHandler.collisionCounter);
-        mWaiter.assertTrue(beginCallback.mCollisionHandler.collisionCounter >= beginCallback.lenght);
+        collisionTest.runTest();
+        mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
     @Test
     public void simultaneousFreeFallTest() throws Exception {
-        OnTestStartRenderAllCallback beginCallback = new OnTestStartRenderAllCallback(100);
+        CollisionTestAll collisionTest = new CollisionTestAll(100);
 
-        sxrTestUtils.setOnRenderCallback(beginCallback);
-        sxrTestUtils.waitForSceneRendering();
-        sxrTestUtils.setOnRenderCallback(null);
-
-        beginCallback.mCollisionHandler.startTime = System.currentTimeMillis();
-        sxrTestUtils.waitForXFrames(168 + 60 ); // Too many simultaneous events triggered need more time to process all???
-
-        runTest(beginCallback.sphere, beginCallback.cube, beginCallback.lenght);
-
-        //It is complicated to try to predict this timing
-        //Log.d("PHYSICS", "    Delta time of the last collisions:" + mCollisionHandler.lastCollisionTime);
-        //mWaiter.assertTrue(mCollisionHandler.lastCollisionTime <= mCollisionHandler.extimatedTime);
-
-        //asserts can not happen on collision event, but we get an idea here
-        //Log.d("PHYSICS", "    Number of collisions:" + beginCallback.mCollisionHandler.collisionCounter);
-        mWaiter.assertTrue(beginCallback.mCollisionHandler.collisionCounter >= beginCallback.lenght);
+        collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
+        sxrTestUtils.waitForXFrames(168);
+        collisionTest.runTest();
+        mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
     @Test
@@ -279,101 +241,99 @@ public class PhysicsSimulationTest {
         mWaiter.assertFalse(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
     }
 
-    class OnTestStartRenderCallback implements SXRTestUtils.OnRenderCallback {
-        public int lenght;
-        public SXRNode cube[];
-        public SXRNode sphere[];
-        public CollisionHandler mCollisionHandler;
-        int currentIndex;
-        int k;
+    class CollisionTest
+    {
+        protected int length;
+        protected SXRNode cube[];
+        protected SXRNode sphere[];
+        protected CollisionHandler mCollisionHandler;
+        protected PhysicsEventHandler mEventHandler;
 
-        OnTestStartRenderCallback () {
-            cube = new SXRNode[100];
-            sphere  = new SXRNode[100];
+        CollisionTest(int length)
+        {
+            cube = new SXRNode[length];
+            sphere = new SXRNode[length];
+            world.setEnable(false);
+            mEventHandler = new PhysicsEventHandler(sxrTestUtils, length);
+            world.getEventReceiver().addListener(mEventHandler);
             mCollisionHandler = new CollisionHandler();
             mCollisionHandler.extimatedTime = 2800; //... + round up
             mCollisionHandler.collisionCounter = 0;
-            currentIndex = 0;
-            k = -100;
-            lenght = 100;
+            this.length = length;
+            addObjects();
+            sxrTestUtils.waitForAssetLoad();
+            world.setEnable(true);
         }
 
-        @Override
-        public void onSceneRendered() {
-            k += 2;
-            cube[currentIndex] = addCube(sxrTestUtils.getMainScene(), (float)k, 1.0f, -10.0f, 0.0f);
-            sphere[currentIndex] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler, (float)k, 40.0f, -10.0f, 1.0f);
-            currentIndex++;
+        public void addObjects()
+        {
+            int x = -100;
+            for (int i = 0; i < length; i++)
+            {
+                x += 2;
+                cube[i] = addCube(sxrTestUtils.getMainScene(), (float) x, 1.0f, -10.0f, 0.0f);
+                sphere[i] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler,
+                                      (float) x, 40.0f, -10.0f, 1.0f);
+            }
+        }
+
+        public void runTest() throws  Exception
+        {
+            for (int i = 0; i < length; i++)
+            {
+                float cubeX = cube[i].getTransform().getPositionX();
+                float cubeY = cube[i].getTransform().getPositionY();
+                float cubeZ = cube[i].getTransform().getPositionZ();
+                float sphereX = sphere[i].getTransform().getPositionX();
+                float sphereY = sphere[i].getTransform().getPositionY();
+                float sphereZ = sphere[i].getTransform().getPositionZ();
+
+                //Log.d("runTest", "[" + i + "] cube: " + cubeX + ", " + cubeY + ", " + cubeZ +
+                //        " sphere: " + sphereX + ", " + sphereY + ", " + sphereZ);
+
+                float d = (sphereY - cubeY);
+                //sphere is on top of the cube
+
+                mWaiter.assertTrue( d <= 1.6f);
+                mWaiter.assertTrue(sphereX == cubeX);
+                mWaiter.assertTrue(sphereZ == cubeZ);
+                //Log.d("PHYSICS", "    Index:" + i + "    Collision distance:" + d);
+            }
         }
     }
 
-    class OnTestStartRenderAllCallback implements SXRTestUtils.OnRenderCallback {
-        public int lenght;
-        public SXRNode cube[];
-        public SXRNode sphere[];
-        public CollisionHandler mCollisionHandler;
-        private boolean objectsAdded = false;
-
-        OnTestStartRenderAllCallback (int lenght) {
-            cube = new SXRNode[lenght];
-            sphere  = new SXRNode[lenght];
-            mCollisionHandler = new CollisionHandler();
-            mCollisionHandler.extimatedTime = 2800; //... + round up
-            mCollisionHandler.collisionCounter = 0;
-            this.lenght = lenght;
+    class CollisionTestAll extends CollisionTest
+    {
+        CollisionTestAll(int length)
+        {
+            super(length);
         }
 
-        @Override
-        public void onSceneRendered() {
-            if (objectsAdded) {
-                return;
-            }
-
-            objectsAdded = true;
+        public void addObjects()
+        {
             int x = -25;
             int j = 0;
-            int k = 10;
+            int l = 10;
             int z = -10;
-            int step = 50 / k;
-
-            world.setEnable(false);
-            for(int i = 0; i < lenght; i++) {
+            for (int i = 0; i < length; i++)
+            {
+                int step = 50 / l;
                 x += step;
-                cube[i] = addCube(sxrTestUtils.getMainScene(), (float)x, 1.0f, (float)z, 0.0f);
-                sphere[i] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler, (float)x, 40.0f, (float)z, 1.0f);
+                cube[i] = addCube(sxrTestUtils.getMainScene(), (float) x, 1.0f, (float) z, 0.0f);
+                sphere[i] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler,
+                                      (float) x, 40.0f, (float) z, 1.0f);
                 j++;
-                if (j == k) {
+                if (j == l)
+                {
                     x = -25;
                     z -= 10;
                     j = 0;
                 }
             }
-            world.setEnable(true);
         }
+
     }
 
-    public void runTest(SXRNode sphere[], SXRNode cube[], int lenght) throws  Exception{
-        world.setEnable(false);
-        for(int i = 0; i < lenght; i++) {
-            float cubeX = cube[i].getTransform().getPositionX();
-            float cubeY = cube[i].getTransform().getPositionY();
-            float cubeZ = cube[i].getTransform().getPositionZ();
-            float sphereX = sphere[i].getTransform().getPositionX();
-            float sphereY = sphere[i].getTransform().getPositionY();
-            float sphereZ = sphere[i].getTransform().getPositionZ();
-
-            //Log.d("runTest", "[" + i + "] cube: " + cubeX + ", " + cubeY + ", " + cubeZ +
-            //        " sphere: " + sphereX + ", " + sphereY + ", " + sphereZ);
-
-            float d = (sphereY - cubeY);
-            //sphere is on top of the cube
-
-            mWaiter.assertTrue( d <= 1.6f);
-            mWaiter.assertTrue(sphereX == cubeX);
-            mWaiter.assertTrue(sphereZ == cubeZ);
-            //Log.d("PHYSICS", "    Index:" + i + "    Collision distance:" + d);
-        }
-    }
 
     public class CollisionHandler implements ICollisionEvents {
         public long startTime;
