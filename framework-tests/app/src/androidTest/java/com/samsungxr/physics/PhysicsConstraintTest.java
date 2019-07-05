@@ -24,6 +24,10 @@ import com.samsungxr.physics.SXRWorld;
 import com.samsungxr.nodes.SXRCubeNode;
 import com.samsungxr.unittestutils.SXRTestUtils;
 import com.samsungxr.unittestutils.SXRTestableActivity;
+import com.samsungxr.utility.Log;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,15 +57,15 @@ public class PhysicsConstraintTest {
         sxrTestUtils.waitForOnInit();
         SXRContext ctx = sxrTestUtils.getSxrContext();
         ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
-        world = new SXRWorld(ctx);
-        ctx.getMainScene().getRoot().attachComponent(world);
+        world = new SXRWorld(sxrTestUtils.getMainScene());
+        sxrTestUtils.waitForXFrames(5);
     }
 
     @Test
-    public void fixedConstraintTest() throws Exception {
-        mWaiter.assertNotNull(world);
+    public void fixedConstraintTest() {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
         world.getEventReceiver().addListener(listener);
+
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
 
         SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 0f, 0.5f, -30f, 1.0f);
@@ -72,12 +76,14 @@ public class PhysicsConstraintTest {
 
         SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), (SXRRigidBody)box2.getComponent(SXRRigidBody.getComponentType()));
         box1.attachComponent(constraint);
+        sxrTestUtils.waitForXFrames(10);
 
-        sxrTestUtils.waitForAssetLoad();
+        listener.waitUntilAdded();
+        world.setEnable(true);
         float distance = transformsDistance(box1.getTransform(), box2.getTransform());
 
         ((SXRRigidBody)box1.getComponent(SXRRigidBody.getComponentType())).applyTorque(0, 0, 200);
-        sxrTestUtils.waitForXFrames(120);
+        listener.waitForXSteps(120);
         float rotation = Math.abs(box1.getTransform().getRotationX() - box2.getTransform().getRotationX())
                 + Math.abs(box1.getTransform().getRotationY() - box2.getTransform().getRotationY())
                 + Math.abs(box1.getTransform().getRotationZ() - box2.getTransform().getRotationZ());
@@ -85,95 +91,111 @@ public class PhysicsConstraintTest {
         mWaiter.assertTrue(Math.abs(distance - transformsDistance(box1.getTransform(), box2.getTransform())) < 0.2);
 
         ((SXRRigidBody)box2.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(300,0,300);
-        sxrTestUtils.waitForXFrames(180);
+        listener.waitForXSteps(180);
         rotation = Math.abs(box1.getTransform().getRotationX() - box2.getTransform().getRotationX())
                 + Math.abs(box1.getTransform().getRotationY() - box2.getTransform().getRotationY())
                 + Math.abs(box1.getTransform().getRotationZ() - box2.getTransform().getRotationZ());
         mWaiter.assertTrue(rotation < 0.2f);
         mWaiter.assertTrue(Math.abs(distance - transformsDistance(box1.getTransform(), box2.getTransform())) < 0.2);
-
         sxrTestUtils.waitForXFrames(30);
     }
 
     @Test
-    public void point2pointConstraintTest() throws Exception {
-        float pivotInA[] = {0f, -1.5f, 0f};
-        float pivotInB[] = {-8f, -1.5f, 0f};
-
-        mWaiter.assertNotNull(world);
+    public void point2pointConstraintTest()  {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         world.getEventReceiver().addListener(listener);
+
+        float pivotInA[] = {0f, -1.5f, 0f};
+        float pivotInB[] = {-8f, -1.5f, 0f};
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0.0f, 10.0f, -10.0f, 0.0f);
         SXRNode box = addCube(sxrTestUtils.getMainScene(), 8.0f, 10.0f, -10.0f, 1.0f);
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).setSimulationType(SXRRigidBody.DYNAMIC);
-
         SXRPoint2PointConstraint constraint = new SXRPoint2PointConstraint(sxrTestUtils.getSxrContext(), (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType()), pivotInA, pivotInB);
-        ball.attachComponent(constraint);
 
-        sxrTestUtils.waitForAssetLoad();
+        ((SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType())).setSimulationType(SXRRigidBody.DYNAMIC);
+        ball.attachComponent(constraint);
+        listener.waitUntilAdded();
+        world.setEnable(true);
         float distance = transformsDistance(ball.getTransform(), box.getTransform());
         mWaiter.assertTrue(distance < 9.8);
 
-        sxrTestUtils.waitForXFrames(60);
+        listener.waitForXSteps(60);
         distance = transformsDistance(ball.getTransform(), box.getTransform());
         mWaiter.assertTrue(distance < 9.5);
-
-        sxrTestUtils.waitForXFrames(60);
+        sxrTestUtils.waitForXFrames(30);
     }
 
     @Test
-    public void hingeConstraintTest() throws Exception {
+    public void hingeConstraintTest() {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        world.getEventReceiver().addListener(listener);
+
         float pivotInA[] = {0f, -3f, 0f};
         float pivotInB[] = {0f, 3f, 0f};
         float axisInA[] = {1f, 0f, 0f};
         float axisInB[] = {1f, 0f, 0f};
-
-        mWaiter.assertNotNull(world);
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
-        world.getEventReceiver().addListener(listener);
-
-        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0.0f, 10.0f, -10.0f, 0.0f);
-        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0.0f, 4.0f, -10.0f, 1.0f);
-
-        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
-
-        SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(),
-                boxBody, pivotInA, pivotInB, axisInA, axisInB);
-        constraint.setLimits(-1f, 1f);
-        ball.attachComponent(constraint);
-
-        final float maxDistabceX = 0.000001f;
+        final float maxDistanceX = 0.000001f;
         final float minDistanceY = 3.f + 1.62f;
         final float maxDIstanceZ = 2.52f;
 
-        sxrTestUtils.waitForXFrames(30);
+        Vector3f ballPos = new Vector3f();
+        Vector3f boxPos = new Vector3f();
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0.0f, 10.0f, -10.0f, 0.0f);
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0.0f, 4.0f, -10.0f, 1.0f);
+        SXRTransform ballTrans = ball.getTransform();
+        SXRTransform boxTrans = box.getTransform();
+        SXRRigidBody boxBody = (SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType());
 
+        SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(),
+                boxBody, pivotInA, pivotInB, axisInA, axisInB);
+
+        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
+        constraint.setLimits(-1f, 1f);
+        ball.attachComponent(constraint);
+        listener.waitUntilAdded();
+        world.setEnable(true);
+
+        listener.waitForXSteps(30);
         boxBody.applyCentralForce(0f, 0f, 1000f); // Must move towards camera
-        sxrTestUtils.waitForXFrames(180);
-        float dx = Math.abs(ball.getTransform().getPositionX() - box.getTransform().getPositionX());
-        float dy = Math.abs(ball.getTransform().getPositionY() - box.getTransform().getPositionY());
-        float dz = Math.abs(ball.getTransform().getPositionZ() - box.getTransform().getPositionZ());
-        mWaiter.assertTrue(dx < maxDistabceX && dy > minDistanceY && dz < maxDIstanceZ);
+        listener.waitForXSteps(180);
+        Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
+        Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        float dx = Math.abs(ballPos.x - boxPos.x);
+        float dy = Math.abs(ballPos.y - boxPos.y);
+        float dz = Math.abs(ballPos.z - boxPos.z);
+        Log.d("PHYSICS", "dx = %f, dy = %f, dz = %f", dx, dy, dz);
+        mWaiter.assertTrue(dx < maxDistanceX && dy > minDistanceY && dz < maxDIstanceZ);
 
         boxBody.applyCentralForce(0f, 1000f, 0f); // May have some effect
-        sxrTestUtils.waitForXFrames(180);
-        dx = Math.abs(ball.getTransform().getPositionX() - box.getTransform().getPositionX());
-        dy = Math.abs(ball.getTransform().getPositionY() - box.getTransform().getPositionY());
-        dz = Math.abs(ball.getTransform().getPositionZ() - box.getTransform().getPositionZ());
-        mWaiter.assertTrue(dx < maxDistabceX && dy > minDistanceY && dz < maxDIstanceZ);
+        listener.waitForXSteps(180);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        Log.d("PHYSICS", "dx = %f, dy = %f, dz = %f", dx, dy, dz);
+        mWaiter.assertTrue(dx < maxDistanceX && dy > minDistanceY && dz < maxDIstanceZ);
 
         boxBody.applyCentralForce(1000f, 0f, 0f); // Must have no effect
-        sxrTestUtils.waitForXFrames(180);
-        dx = Math.abs(ball.getTransform().getPositionX() - box.getTransform().getPositionX());
-        dy = Math.abs(ball.getTransform().getPositionY() - box.getTransform().getPositionY());
-        dz = Math.abs(ball.getTransform().getPositionZ() - box.getTransform().getPositionZ());
-        mWaiter.assertTrue(dx < maxDistabceX && dy > minDistanceY && dz < maxDIstanceZ);
+        listener.waitForXSteps(180);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        Log.d("PHYSICS", "dx = %f, dy = %f, dz = %f", dx, dy, dz);
+        mWaiter.assertTrue(dx < maxDistanceX && dy > minDistanceY && dz < maxDIstanceZ);
+        sxrTestUtils.waitForXFrames(30);
     }
 
     @Test
     public void sliderConstraintTest() throws Exception {
-        mWaiter.assertNotNull(world);
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
         world.getEventReceiver().addListener(listener);
 
@@ -190,101 +212,104 @@ public class PhysicsConstraintTest {
         constraint.setAngularUpperLimit(2f);
         constraint.setLinearLowerLimit(-5f);
         constraint.setLinearUpperLimit(-2f);
+
+        sxrTestUtils.waitForXFrames(10);
         box1.attachComponent(constraint);
 
-        sxrTestUtils.waitForXFrames(30);
+        listener.waitUntilAdded();
+        world.setEnable(true);
+        listener.waitForXSteps(30);
 
         ((SXRRigidBody)box2.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(400f, 0f, 0f);
-        sxrTestUtils.waitForXFrames(180);
+        listener.waitForXSteps(180);
         float d = transformsDistance(box1.getTransform(), box2.getTransform());
         mWaiter.assertTrue(d >= 2.0f && d <= 5.0f);
 
         ((SXRRigidBody)box2.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(-500f, 0f, 0f);
-        sxrTestUtils.waitForXFrames(180);
+        listener.waitForXSteps(180);
         d = transformsDistance(box1.getTransform(), box2.getTransform());
         mWaiter.assertTrue(d >= 2.0f && d <= 5.0f);
 
         ((SXRRigidBody)box1.getComponent(SXRRigidBody.getComponentType())).applyTorque(100f, 0f, 0f);
-        sxrTestUtils.waitForXFrames(180);
+        sxrTestUtils.waitForXFrames(30);
     }
 
     @Test
-    public void ConeTwistConstraintTest() throws Exception {
-        mWaiter.assertNotNull(world);
+    public void ConeTwistConstraintTest() {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         world.getEventReceiver().addListener(listener);
 
-        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0f, -5f, -15f, 0f);
-
-        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5f, -15f, 1f);
-
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0f, -5f, -15f, 1f);
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5f, -15f, 0f);
+        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
         float pivot[] = {0f, -5f, 0f};
         float rotation[] = {0f, -1f, 0f, 1f, 0f, 0f, 0f, 0f, 1f};
+        final float maxDistance = (float) (Math.sin(Math.PI * 0.375) * 10.0);
+        float d;
 
         SXRConeTwistConstraint constraint = new SXRConeTwistConstraint(sxrTestUtils.getSxrContext(),
-                (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType()), pivot,
-                rotation, rotation);
+                boxBody, pivot, rotation, rotation);
 
         ball.attachComponent(constraint);
+        listener.waitUntilAdded();
+        world.setEnable(true);
 
-        final float maxDistance = (float)(Math.sin(Math.PI * 0.375) * 10.0);
+        boxBody.applyCentralForce(100f, 0f, 100f);
+        listener.waitForXSteps(180);
+        d = transformsDistance(ball.getTransform(), box.getTransform());
+        mWaiter.assertTrue(maxDistance >= d);
 
-        ((SXRRigidBody)ball.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(100f, 0f, 100f);
-        sxrTestUtils.waitForXFrames(180);
-        mWaiter.assertTrue(maxDistance >= transformsDistance(ball.getTransform(), box.getTransform()));
-
-        ((SXRRigidBody)ball.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(-500f, 0f, 0f);
-        sxrTestUtils.waitForXFrames(180);
-        mWaiter.assertTrue(maxDistance >= transformsDistance(ball.getTransform(), box.getTransform()));
-    }
+        boxBody.applyCentralForce(-500f, 0f, 0f);
+        listener.waitForXSteps(180);
+        d = transformsDistance(ball.getTransform(), box.getTransform());
+        mWaiter.assertTrue(maxDistance >= d);
+        sxrTestUtils.waitForXFrames(30);
+   }
 
     @Test
-    public void GenericConstraintTest() throws Exception {
-        mWaiter.assertNotNull(world);
+    public void GenericConstraintTest() {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
         world.getEventReceiver().addListener(listener);
 
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -0.5f, -15f);
-
         SXRNode box = addCube(sxrTestUtils.getMainScene(), -3f, 0f, -10f, 1f);
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).setSimulationType(SXRRigidBody.DYNAMIC);
-
+        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 3f, 0f, -10f, 1f);
-
         final float joint[] = {-6f, 0f, 0f};
         final float rotation[] = {1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f};
+        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), boxBody, joint, rotation, rotation);
+        SXRTransform ballTrans = ball.getTransform();
 
-        SXRGenericConstraint constraint = new SXRGenericConstraint(
-                sxrTestUtils.getSxrContext(), (SXRRigidBody)box.getComponent(
-                        SXRRigidBody.getComponentType()), joint, rotation, rotation);
+        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         constraint.setAngularLowerLimits((float)-Math.PI, (float)-Math.PI, (float)-Math.PI);
         constraint.setAngularUpperLimits((float)Math.PI, (float)Math.PI, (float)Math.PI);
         constraint.setLinearLowerLimits(-3f, -10f, -3f);
         constraint.setLinearUpperLimits(3f, 10f, 3f);
-
         ball.attachComponent(constraint);
+        listener.waitUntilAdded();
 
-        sxrTestUtils.waitForXFrames(30);
+        world.setEnable(true);
+        listener.waitForXSteps(30);
 
-        float anchor[] = {ball.getTransform().getPositionX(), ball.getTransform().getPositionY(),
-                ball.getTransform().getPositionZ()};
+        float anchor[] = {ballTrans.getPositionX(), ballTrans.getPositionY(), ballTrans.getPositionZ()};
         float offsetLimit = 0.005f;
 
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(100f, 200f, 100f);
-        sxrTestUtils.waitForXFrames(90);
-        mWaiter.assertTrue(checkTransformOffset(ball.getTransform(), anchor, offsetLimit));
+        boxBody.applyCentralForce(100f, 200f, 100f);
+        listener.waitForXSteps(90);
+        mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
 
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(-100f, 200f, -100f);
-        sxrTestUtils.waitForXFrames(90);
-        mWaiter.assertTrue(checkTransformOffset(ball.getTransform(), anchor, offsetLimit));
+        boxBody.applyCentralForce(-100f, 200f, -100f);
+        listener.waitForXSteps(90);
+        mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
 
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).applyTorque(0f, 1000f, 0f);
-        sxrTestUtils.waitForXFrames(180);
-        mWaiter.assertTrue(checkTransformOffset(ball.getTransform(), anchor, offsetLimit));
+        boxBody.applyTorque(0f, 1000f, 0f);
+        listener.waitForXSteps(180);
+        mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
 
-        ((SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType())).applyCentralForce(-1000f, 500f, 500f);
-        sxrTestUtils.waitForXFrames(180);
-        mWaiter.assertTrue(!checkTransformOffset(ball.getTransform(), anchor, offsetLimit));
+        boxBody.applyCentralForce(-1000f, 500f, 500f);
+        listener.waitForXSteps(180);
+        mWaiter.assertTrue(!checkTransformOffset(ballTrans, anchor, offsetLimit));
+        sxrTestUtils.waitForXFrames(30);
     }
 
     /*
@@ -310,6 +335,8 @@ public class PhysicsConstraintTest {
         sphereObject.getTransform().setScaleY(0.5f);
         sphereObject.getTransform().setScaleZ(0.5f);
         sphereObject.getTransform().setPosition(x, y, z);
+        sphereObject.setName("ball");
+        scene.addNode(sphereObject);
 
         // Collider
         SXRSphereCollider sphereCollider = new SXRSphereCollider(sxrTestUtils.getSxrContext());
@@ -320,8 +347,6 @@ public class PhysicsConstraintTest {
         SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
 
         sphereObject.attachComponent(mSphereRigidBody);
-
-        scene.addNode(sphereObject);
         return sphereObject;
     }
 
@@ -341,6 +366,8 @@ public class PhysicsConstraintTest {
         SXRNode cubeObject = new SXRNode(sxrTestUtils.getSxrContext(), cubeMesh, cubeTexture);
 
         cubeObject.getTransform().setPosition(x, y, z);
+        cubeObject.setName("box");
+        scene.addNode(cubeObject);
 
         // Collider
         SXRBoxCollider boxCollider = new SXRBoxCollider(sxrTestUtils.getSxrContext());
@@ -350,10 +377,7 @@ public class PhysicsConstraintTest {
         // Physics body
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
         body.setSimulationType(SXRRigidBody.KINEMATIC);
-
         cubeObject.attachComponent(body);
-
-        scene.addNode(cubeObject);
         return cubeObject;
     }
 
@@ -363,6 +387,8 @@ public class PhysicsConstraintTest {
 
         groundObject.getTransform().setScale(100f, 0.5f, 100f);
         groundObject.getTransform().setPosition(x, y, z);
+        groundObject.setName("ground");
+        scene.addNode(groundObject);
 
         SXRBoxCollider boxCollider = new SXRBoxCollider(sxrTestUtils.getSxrContext());
         boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
@@ -371,7 +397,6 @@ public class PhysicsConstraintTest {
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
         groundObject.attachComponent(body);
 
-        scene.addNode(groundObject);
 
         return groundObject;
     }

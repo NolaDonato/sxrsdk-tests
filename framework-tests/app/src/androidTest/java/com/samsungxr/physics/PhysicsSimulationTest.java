@@ -34,10 +34,12 @@ import java.util.concurrent.TimeoutException;
 
 @RunWith(AndroidJUnit4.class)
 public class PhysicsSimulationTest {
+    private static final String TAG = "PHYSICS";
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
     SXRWorld world;
-
+    SXRScene scene;
+    SXRContext context;
     private SXRMesh cubeMesh = null;
     private SXRTexture cubeTexture = null;
 
@@ -53,66 +55,67 @@ public class PhysicsSimulationTest {
         mWaiter = new Waiter();
         sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
-        SXRContext ctx = sxrTestUtils.getSxrContext();
-        ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
-        world = new SXRWorld(ctx);
-        ctx.getMainScene().getRoot().attachComponent(world);
+        context = sxrTestUtils.getSxrContext();
+        scene = sxrTestUtils.getMainScene();
+        scene.getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
+        world = new SXRWorld(scene);
     }
 
     @Test
-    public void updatedOwnerTransformTest() throws Exception {
+    public void updatedOwnerTransformTest()
+    {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 10);
         world.getEventReceiver().addListener(listener);
-        addGroundMesh(sxrTestUtils.getMainScene(), 0.0f,0.0f,0.0f, 0.0f);
+        addGroundMesh(scene, 0.0f,0.0f,0.0f, 0.0f);
 
         SXRNode[] objects = new SXRNode[10];
         SXRRigidBody[] bodies = new SXRRigidBody[10];
 
         for(int i = 0; i < 10; i = i + 2) {
-            SXRBoxCollider boxCollider = new SXRBoxCollider(sxrTestUtils.getSxrContext());
+            SXRBoxCollider boxCollider = new SXRBoxCollider(context);
             boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
             objects[i] = meshWithTexture("cube.obj", "cube.jpg");
             objects[i].getTransform().setPosition(0.0f -i, 6.0f, -10.0f - (2.0f*i));
             objects[i].attachCollider(boxCollider);
             switch (i) {
-                case 0 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext()); //object moves, rigid body doesn't
+                case 0 : bodies[i] = new SXRRigidBody(context); //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 2 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f);  //rigidbody is a "trigger  collider"
+                case 2 : bodies[i] = new SXRRigidBody(context, 1.0f);  //rigidbody is a "trigger  collider"
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 4 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext());  //object moves, rigid body doesn't
+                case 4 : bodies[i] = new SXRRigidBody(context);  //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 6 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is "sleeping", until it is hit by another
+                case 6 : bodies[i] = new SXRRigidBody(context, 1.0f); //rigid body is "sleeping", until it is hit by another
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 8 : bodies[i] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 1.0f); //rigid body is obbeys all external forces
+                case 8 : bodies[i] = new SXRRigidBody(context, 1.0f); //rigid body is obbeys all external forces
                          bodies[i].setSimulationType(SXRRigidBody.DYNAMIC);
                          break;
             }
+            scene.addNode(objects[i]);
             objects[i].attachComponent(bodies[i]);
-            sxrTestUtils.getMainScene().addNode(objects[i]);
 
-            SXRSphereCollider sphereCollider = new SXRSphereCollider(sxrTestUtils.getSxrContext());
+            SXRSphereCollider sphereCollider = new SXRSphereCollider(context);
             sphereCollider.setRadius(0.5f);
             objects[i+1] = meshWithTexture("sphere.obj", "sphere.jpg");
+            scene.addNode(objects[i+1]);
             objects[i+1].getTransform().setScale(0.5f,0.5f,0.5f);
             objects[i+1].getTransform().setPosition(0.0f -i, 9.0f, -10.0f - (2.0f*i));
             objects[i+1].attachCollider(sphereCollider);
-            bodies[i+1] = new SXRRigidBody(sxrTestUtils.getSxrContext(), 10.0f);
+            bodies[i+1] = new SXRRigidBody(context, 10.0f);
             objects[i+1].attachComponent(bodies[i+1]);
-            sxrTestUtils.getMainScene().addNode(objects[i+1]);
-
         }
 
-        sxrTestUtils.waitForAssetLoad();
-        sxrTestUtils.waitForXFrames(47);
+        listener.waitUntilAdded();
+        world.setEnable(true);
+        listener.waitForXSteps(47);
         for(int i = 0; i < 5; i++) {
             objects[i*2].getTransform().setPositionX(2.0f);
         }
 
-        sxrTestUtils.waitForXFrames(600);
+        listener.waitForXSteps(600);
 
         float d = (bodies[1].getTransform().getPositionY()
                 - bodies[0].getTransform().getPositionY()); //sphere is on top of the cube rigid body
@@ -137,108 +140,120 @@ public class PhysicsSimulationTest {
         for(int i = 0; i < 5; i++) {
             mWaiter.assertTrue(objects[i*2].getTransform().getPositionX() == bodies[i*2].getTransform().getPositionX());
         }
-
-
-        sxrTestUtils.waitForXFrames(60);
+        listener.waitForXSteps(60);
     }
 
     @Test
-    public void freeFallTest() throws Exception {
+    public void freeFallTest()  {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
         world.getEventReceiver().addListener(listener);
         CollisionHandler mCollisionHandler = new CollisionHandler();
         mCollisionHandler.extimatedTime = 2800; //... + round up
         mCollisionHandler.collisionCounter = 0;
 
-        SXRNode cube = addCube(sxrTestUtils.getMainScene(), 0.0f, 1.0f, -10.0f, 0.0f);
-        SXRNode sphere = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler, 0.0f, 40.0f, -10.0f, 1.0f);
+        SXRNode cube = addCube(scene, 0.0f, 1.0f, -10.0f, 0.0f);
+        SXRNode sphere = addSphere(scene, mCollisionHandler, 0.0f, 40.0f, -10.0f, 1.0f);
 
         mCollisionHandler.startTime = System.currentTimeMillis();
-        sxrTestUtils.waitForAssetLoad();
-        sxrTestUtils.waitForXFrames(168);
-        float d = (sphere.getTransform().getPositionY() - cube.getTransform().getPositionY()); //sphere is on top of the cube
+        listener.waitUntilAdded();
+        world.setEnable(true);
+        listener.waitForXSteps(168);
+        float d = (sphere.getTransform().getPositionY() - cube.getTransform().getPositionY()); //sphere is on top of the cubeROP
         mWaiter.assertTrue( d <= 1.6f);
-        //Log.d("PHYSICS", "    Number of collisions:" + mCollisionHandler.collisionCounter);
+        Log.d("PHYSICS", "    Number of collisions:" + mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(mCollisionHandler.collisionCounter >= 1);
     }
 
     @Test
-    public void spacedFreeFallTest() throws Exception {
+    public void spacedFreeFallTest() {
         CollisionTest collisionTest = new CollisionTest(100);
         collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
-        sxrTestUtils.waitForXFrames(168);
-        collisionTest.runTest();
+        collisionTest.runTest(168);
+        //sxrTestUtils.getMainScene().getRoot().detachComponent(SXRWorld.getComponentType());
+        Log.d("PHYSICS", "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
     @Test
-    public void simultaneousFreeFallTest() throws Exception {
+    public void simultaneousFreeFallTest() {
         CollisionTestAll collisionTest = new CollisionTestAll(100);
 
         collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
-        sxrTestUtils.waitForXFrames(168);
-        collisionTest.runTest();
+        collisionTest.runTest(168);
+        //sxrTestUtils.getMainScene().getRoot().detachComponent(SXRWorld.getComponentType());
+        Log.d("PHYSICS", "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
     @Test
-    public void applyingForcesTest() throws Exception {
+    public void applyingForcesTest()  {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
+        world.getEventReceiver().addListener(listener);
+
         float distance;
-        float rotation;
-        addGroundMesh(sxrTestUtils.getMainScene(), 0.0f,0.0f,0.0f, 0.0f);
-        SXRNode cube = addCube(sxrTestUtils.getMainScene(), 0.0f, 0.6f, -5.0f, 0.01f);
-        sxrTestUtils.waitForSceneRendering();
-        sxrTestUtils.waitForXFrames(10);
+        float pitch;
+        float deltaZ;
+        float deltaPitch;
+        addGroundMesh(scene, 0.0f,0.0f,0.0f, 0.0f);
+        SXRNode cube = addCube(scene, 0.0f, 0.6f, -5.0f, 0.01f);
+        SXRRigidBody body = (SXRRigidBody) cube.getComponent(SXRRigidBody.getComponentType());
+        listener.waitUntilAdded();
+        world.setEnable(true);
 
         distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyCentralForce(0,0,-1);
-        sxrTestUtils.waitForXFrames(60);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertTrue(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyCentralForce(0,0,-1);
+        listener.waitForXSteps(60);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertTrue(deltaPitch < 1);
 
         distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyForce(0,0,-1,
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyForce(0,0,-1, 0.0f, 0.5f, 0.0f);
+        listener.waitForXSteps(120);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertFalse(deltaPitch < 1);
+
+        distance = cube.getTransform().getPositionZ();
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyCentralImpulse(0,0,-0.02f);
+        listener.waitForXSteps(120);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertTrue(deltaPitch < 1);
+
+        distance = cube.getTransform().getPositionZ();
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyImpulse(0,0, -0.02f,
                 0.0f, 0.5f, 0.0f);
-        sxrTestUtils.waitForXFrames(120);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertFalse(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
+        listener.waitForXSteps(120);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertFalse(deltaPitch < 1);
 
         distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyCentralImpulse(0,0,-0.02f);
-        sxrTestUtils.waitForXFrames(120);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertTrue(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyTorque(-1, 0, 0);
+        listener.waitForXSteps(120);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertFalse(deltaPitch < 1);
 
         distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyImpulse(0,0, -0.02f,
-                0.0f, 0.5f, 0.0f);
-        sxrTestUtils.waitForXFrames(120);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertFalse(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
-
-        distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyTorque(-1, 0, 0);
-        sxrTestUtils.waitForXFrames(120);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertFalse(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
-
-        distance = cube.getTransform().getPositionZ();
-        rotation = cube.getTransform().getRotationPitch();
-        ((SXRRigidBody)cube.getComponent(
-                SXRRigidBody.getComponentType())).applyTorqueImpulse(-0.1f, 0, 0);
-        sxrTestUtils.waitForXFrames(60);
-        mWaiter.assertFalse(distance - cube.getTransform().getPositionZ() == 0);
-        mWaiter.assertFalse(Math.abs(rotation - cube.getTransform().getRotationPitch()) < 1);
+        pitch = cube.getTransform().getRotationPitch();
+        body.applyTorqueImpulse(-0.1f, 0, 0);
+        listener.waitForXSteps(60);
+        deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
+        deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
+        mWaiter.assertTrue(deltaZ > 0.0001f);
+        mWaiter.assertFalse(deltaPitch < 1);
     }
 
     class CollisionTest
@@ -248,21 +263,21 @@ public class PhysicsSimulationTest {
         protected SXRNode sphere[];
         protected CollisionHandler mCollisionHandler;
         protected PhysicsEventHandler mEventHandler;
+        protected SXRScene mScene;
 
         CollisionTest(int length)
         {
             cube = new SXRNode[length];
             sphere = new SXRNode[length];
-            world.setEnable(false);
-            mEventHandler = new PhysicsEventHandler(sxrTestUtils, length);
+            mEventHandler = new PhysicsEventHandler(sxrTestUtils, 2 * length);
             world.getEventReceiver().addListener(mEventHandler);
             mCollisionHandler = new CollisionHandler();
             mCollisionHandler.extimatedTime = 2800; //... + round up
             mCollisionHandler.collisionCounter = 0;
+            mScene = sxrTestUtils.getMainScene();
             this.length = length;
             addObjects();
-            sxrTestUtils.waitForAssetLoad();
-            world.setEnable(true);
+            mEventHandler.waitUntilAdded();
         }
 
         public void addObjects()
@@ -271,14 +286,15 @@ public class PhysicsSimulationTest {
             for (int i = 0; i < length; i++)
             {
                 x += 2;
-                cube[i] = addCube(sxrTestUtils.getMainScene(), (float) x, 1.0f, -10.0f, 0.0f);
-                sphere[i] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler,
-                                      (float) x, 40.0f, -10.0f, 1.0f);
+                cube[i] = addCube(mScene, (float) x, 1.0f, -10.0f, 0.0f);
+                sphere[i] = addSphere(mScene, mCollisionHandler, (float) x, 40.0f, -10.0f, 1.0f);
             }
         }
 
-        public void runTest() throws  Exception
+        public void runTest(int nsteps)
         {
+            world.setEnable(true);
+            mEventHandler.waitForXSteps(nsteps);
             for (int i = 0; i < length; i++)
             {
                 float cubeX = cube[i].getTransform().getPositionX();
@@ -288,17 +304,18 @@ public class PhysicsSimulationTest {
                 float sphereY = sphere[i].getTransform().getPositionY();
                 float sphereZ = sphere[i].getTransform().getPositionZ();
 
-                //Log.d("runTest", "[" + i + "] cube: " + cubeX + ", " + cubeY + ", " + cubeZ +
-                //        " sphere: " + sphereX + ", " + sphereY + ", " + sphereZ);
+                Log.d("PHYSICS", "[" + i + "] cube: " + cubeX + ", " + cubeY + ", " + cubeZ +
+                        " sphere: " + sphereX + ", " + sphereY + ", " + sphereZ);
 
                 float d = (sphereY - cubeY);
                 //sphere is on top of the cube
 
                 mWaiter.assertTrue( d <= 1.6f);
-                mWaiter.assertTrue(sphereX == cubeX);
-                mWaiter.assertTrue(sphereZ == cubeZ);
+                mWaiter.assertTrue(Math.abs(sphereX - cubeX) < 0.05f);
+                mWaiter.assertTrue(Math.abs(sphereZ - cubeZ) < 0.05f);
                 //Log.d("PHYSICS", "    Index:" + i + "    Collision distance:" + d);
             }
+            mEventHandler.waitForXSteps(30);
         }
     }
 
@@ -319,8 +336,8 @@ public class PhysicsSimulationTest {
             {
                 int step = 50 / l;
                 x += step;
-                cube[i] = addCube(sxrTestUtils.getMainScene(), (float) x, 1.0f, (float) z, 0.0f);
-                sphere[i] = addSphere(sxrTestUtils.getMainScene(), mCollisionHandler,
+                cube[i] = addCube(mScene, (float) x, 1.0f, (float) z, 0.0f);
+                sphere[i] = addSphere(mScene, mCollisionHandler,
                                       (float) x, 40.0f, (float) z, 1.0f);
                 j++;
                 if (j == l)
@@ -331,7 +348,6 @@ public class PhysicsSimulationTest {
                 }
             }
         }
-
     }
 
 
@@ -354,9 +370,9 @@ public class PhysicsSimulationTest {
     private SXRNode meshWithTexture(String mesh, String texture) {
         SXRNode object = null;
         try {
-            object = new SXRNode(sxrTestUtils.getSxrContext(), new SXRAndroidResource(
-                    sxrTestUtils.getSxrContext(), mesh), new SXRAndroidResource(sxrTestUtils.getSxrContext(),
-                    texture));
+            object = new SXRNode(context,
+                    new SXRAndroidResource(context, mesh),
+                    new SXRAndroidResource(context, texture));
         } catch (IOException e) {
             mWaiter.fail(e);
         }
@@ -371,35 +387,36 @@ public class PhysicsSimulationTest {
 
         if (sphereMesh == null) {
             try {
-                sphereMesh = sxrTestUtils.getSxrContext().getAssetLoader().loadMesh(
-                        new SXRAndroidResource(sxrTestUtils.getSxrContext(), "sphere.obj"));
-                sphereTexture = sxrTestUtils.getSxrContext().getAssetLoader().loadTexture(
-                        new SXRAndroidResource(sxrTestUtils.getSxrContext(), "sphere.jpg"));
+                sphereMesh = context.getAssetLoader().loadMesh(
+                        new SXRAndroidResource(context, "sphere.obj"));
+                sphereTexture = context.getAssetLoader().loadTexture(
+                        new SXRAndroidResource(context, "sphere.jpg"));
             } catch (IOException e) {
 
             }
         }
 
-        SXRNode sphereObject = new SXRNode(sxrTestUtils.getSxrContext(), sphereMesh, sphereTexture);
+        SXRNode sphereObject = new SXRNode(context, sphereMesh, sphereTexture);
 
         sphereObject.getTransform().setScaleX(0.5f);
         sphereObject.getTransform().setScaleY(0.5f);
         sphereObject.getTransform().setScaleZ(0.5f);
         sphereObject.getTransform().setPosition(x, y, z);
+        sphereObject.setName("sphere");
+        scene.addNode(sphereObject);
 
         // Collider
-        SXRSphereCollider sphereCollider = new SXRSphereCollider(sxrTestUtils.getSxrContext());
+        SXRSphereCollider sphereCollider = new SXRSphereCollider(context);
         sphereCollider.setRadius(0.5f);
         sphereObject.attachCollider(sphereCollider);
 
         // Physics body
-        SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
+        SXRRigidBody mSphereRigidBody = new SXRRigidBody(context, mass);
 
         sphereObject.getEventReceiver().addListener(mCollisionHandler);
 
         sphereObject.attachComponent(mSphereRigidBody);
 
-        scene.addNode(sphereObject);
         return sphereObject;
     }
 
@@ -407,56 +424,58 @@ public class PhysicsSimulationTest {
 
         if (cubeMesh == null) {
             try {
-                cubeMesh = sxrTestUtils.getSxrContext().getAssetLoader().loadMesh(
-                        new SXRAndroidResource(sxrTestUtils.getSxrContext(), "cube.obj"));
-                cubeTexture = sxrTestUtils.getSxrContext().getAssetLoader().loadTexture(
-                        new SXRAndroidResource(sxrTestUtils.getSxrContext(), "cube.jpg"));
+                cubeMesh = context.getAssetLoader().loadMesh(
+                        new SXRAndroidResource(context, "cube.obj"));
+                cubeTexture = context.getAssetLoader().loadTexture(
+                        new SXRAndroidResource(context, "cube.jpg"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
-        SXRNode cubeObject = new SXRNode(sxrTestUtils.getSxrContext(), cubeMesh, cubeTexture);
+        SXRNode cubeObject = new SXRNode(context, cubeMesh, cubeTexture);
 
         cubeObject.getTransform().setPosition(x, y, z);
+        cubeObject.setName("cube");
+        scene.addNode(cubeObject);
 
         // Collider
-        SXRBoxCollider boxCollider = new SXRBoxCollider(sxrTestUtils.getSxrContext());
+        SXRBoxCollider boxCollider = new SXRBoxCollider(context);
         boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
         cubeObject.attachCollider(boxCollider);
 
         // Physics body
-        SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
+        SXRRigidBody body = new SXRRigidBody(context, mass);
 
         cubeObject.attachComponent(body);
 
-        scene.addNode(cubeObject);
         return cubeObject;
     }
 
     private void addGroundMesh(SXRScene scene, float x, float y, float z, float mass) {
         try {
-            SXRMesh mesh = sxrTestUtils.getSxrContext().createQuad(100.0f, 100.0f);
+            SXRMesh mesh = context.createQuad(100.0f, 100.0f);
             SXRTexture texture =
-                    sxrTestUtils.getSxrContext().getAssetLoader().loadTexture(new SXRAndroidResource(sxrTestUtils.getSxrContext(), "floor.jpg"));
-            SXRNode meshObject = new SXRNode(sxrTestUtils.getSxrContext(), mesh, texture);
+                    context.getAssetLoader().loadTexture(new SXRAndroidResource(context, "floor.jpg"));
+            SXRNode meshObject = new SXRNode(context, mesh, texture);
 
             meshObject.getTransform().setPosition(x, y, z);
             meshObject.getTransform().setRotationByAxis(-90.0f, 1.0f, 0.0f, 0.0f);
+            meshObject.setName("ground");
+            scene.addNode(meshObject);
 
             // Collider
-            SXRMeshCollider meshCollider = new SXRMeshCollider(sxrTestUtils.getSxrContext(), mesh);
+            SXRMeshCollider meshCollider = new SXRMeshCollider(context, mesh);
             meshObject.attachCollider(meshCollider);
 
             // Physics body
-            SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext());
+            SXRRigidBody body = new SXRRigidBody(context);
 
             body.setRestitution(0.5f);
             body.setFriction(1.0f);
 
             meshObject.attachComponent(body);
 
-            scene.addNode(meshObject);
         } catch (IOException exception) {
             Log.d("sxrf", exception.toString());
         }

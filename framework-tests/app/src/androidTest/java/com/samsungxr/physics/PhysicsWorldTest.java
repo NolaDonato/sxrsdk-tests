@@ -44,7 +44,7 @@ public class PhysicsWorldTest {
         SXRTestUtils.OnInitCallback initCallback = new SXRTestUtils.OnInitCallback() {
             @Override
             public void onInit(SXRContext sxrContext) {
-                mWorld = new SXRWorld(sxrContext);
+                mWorld = new SXRWorld(sxrTestUtils.getMainScene());
                 sxrContext.getMainScene().getRoot().attachComponent(mWorld);
             }
         };

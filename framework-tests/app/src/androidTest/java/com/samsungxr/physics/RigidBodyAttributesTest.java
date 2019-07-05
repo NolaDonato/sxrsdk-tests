@@ -33,6 +33,7 @@ import java.util.concurrent.TimeoutException;
 public class RigidBodyAttributesTest {
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
+    private SXRWorld world;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -40,57 +41,61 @@ public class RigidBodyAttributesTest {
 
     @Before
     public void setUp() throws TimeoutException {
-        SXRTestUtils.OnInitCallback onInitCallback = new SXRTestUtils.OnInitCallback() {
-            @Override
-            public void onInit(SXRContext sxrContext) {
-                Log.d("SXRPHYSICS", "HAPPENING");
-                SXRWorld world = new SXRWorld(sxrTestUtils.getSxrContext());
-                sxrTestUtils.getMainScene().getRoot().attachComponent(world);
-            }
-        };
-        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity(), onInitCallback);
+        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         mWaiter = new Waiter();
         sxrTestUtils.waitForOnInit();
+        world = new SXRWorld(sxrTestUtils.getMainScene());
     }
 
     @Test
-    public void createRigidBody() throws Exception {
+    public void createRigidBody()  {
         SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.5f, 40.0f, -10.0f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.5f, 40.0f, -10.0f);
         mWaiter.assertTrue(mSphereRigidBody.getMass() == 2.5f);
         mWaiter.assertTrue(mSphereRigidBody.getRestitution() == 1.5f);
         mWaiter.assertTrue(mSphereRigidBody.getFriction() == 0.5f);
     }
 
     @Test
-    public void enableRigidBody() throws Exception {
+    public void enableRigidBody()  {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
+        world.getEventReceiver().addListener(listener);
+
         SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.0f, 1.0f, 10.0f, -10.0f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody,  1.0f, 10.0f, -10.0f);
 
         SXRRigidBody mSphereRigidBody2 = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
-        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody2, 1.0f, 2.0f, 10.0f, -10.0f);
+        addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody2, 2.0f, 10.0f, -10.0f);
 
-        sxrTestUtils.waitForXFrames(10);
+        listener.waitUntilAdded();
+        world.setEnable(true);
+        listener.waitForXSteps(10);
 
         float lastY = mSphereRigidBody.getTransform().getPositionY();
         float lastY2 =  mSphereRigidBody2.getTransform().getPositionY();
-        sxrTestUtils.waitForXFrames(10);
-        mWaiter.assertTrue( lastY > mSphereRigidBody.getTransform().getPositionY());//balls are falling
-        mWaiter.assertTrue( lastY2 > mSphereRigidBody2.getTransform().getPositionY());
+        listener.waitForXSteps(10);
+        float newY = mSphereRigidBody.getTransform().getPositionY();
+        float newY2 = mSphereRigidBody2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY > newY);//balls are falling
+        mWaiter.assertTrue( lastY2 > newY2);
 
         lastY = mSphereRigidBody.getTransform().getPositionY();
         lastY2 =  mSphereRigidBody2.getTransform().getPositionY();
         mSphereRigidBody.setEnable(false);
-        sxrTestUtils.waitForXFrames(60);
-        mWaiter.assertTrue( lastY == mSphereRigidBody.getTransform().getPositionY()); //ball1 stoped falling
-        mWaiter.assertTrue( lastY2 > mSphereRigidBody2.getTransform().getPositionY()); //ball2 is falling
+        listener.waitForXSteps(60);
+        newY = mSphereRigidBody.getTransform().getPositionY();
+        newY2 = mSphereRigidBody2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY == newY); //ball1 stoped falling
+        mWaiter.assertTrue( lastY2 > newY2); //ball2 is falling
 
         lastY = mSphereRigidBody.getTransform().getPositionY();
         lastY2 =  mSphereRigidBody2.getTransform().getPositionY();
         mSphereRigidBody.setEnable(true);
-        sxrTestUtils.waitForXFrames(10);
-        mWaiter.assertTrue( lastY > mSphereRigidBody.getTransform().getPositionY()); //ball1 is falling again
-        mWaiter.assertTrue( lastY2 > mSphereRigidBody2.getTransform().getPositionY()); //ball2 kept falling
+        listener.waitForXSteps(10);
+        newY = mSphereRigidBody.getTransform().getPositionY();
+        newY2 = mSphereRigidBody2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY > newY); //ball1 is falling again
+        mWaiter.assertTrue( lastY2 > newY2); //ball2 kept falling
 
     }
 
@@ -106,10 +111,9 @@ public class RigidBodyAttributesTest {
         return object;
     }
 
-    private void addSphere(SXRScene scene, SXRRigidBody sphereRigidBody, float radius, float x, float y, float z) {
+    private void addSphere(SXRScene scene, SXRRigidBody sphereRigidBody, float x, float y, float z) {
 
-        SXRNode sphereObject = meshWithTexture("sphere.obj",
-                "sphere.jpg");
+        SXRNode sphereObject = meshWithTexture("sphere.obj", "sphere.jpg");
         sphereObject.getTransform().setPosition(x, y, z);
 
         // Collider
@@ -120,9 +124,7 @@ public class RigidBodyAttributesTest {
         // Physics body
         sphereRigidBody.setRestitution(1.5f);
         sphereRigidBody.setFriction(0.5f);
-
-        sphereObject.attachComponent(sphereRigidBody);
-
         scene.addNode(sphereObject);
+        sphereObject.attachComponent(sphereRigidBody);
     }
 }
