@@ -239,9 +239,12 @@ public class PhysicsConstraintTest {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         world.getEventReceiver().addListener(listener);
 
-        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0f, -5f, -15f, 1f);
-        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5f, -15f, 0f);
-        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0f, -5f, -15f, 0);
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5f, -15f, 1);
+        SXRTransform boxTrans = box.getTransform();
+        SXRTransform ballTrans = ball.getTransform();
+        SXRRigidBody boxBody = (SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType());
+        SXRRigidBody ballBody = (SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType());
         float pivot[] = {0f, -5f, 0f};
         float rotation[] = {0f, -1f, 0f, 1f, 0f, 0f, 0f, 0f, 1f};
         final float maxDistance = (float) (Math.sin(Math.PI * 0.375) * 10.0);
@@ -250,18 +253,19 @@ public class PhysicsConstraintTest {
         SXRConeTwistConstraint constraint = new SXRConeTwistConstraint(sxrTestUtils.getSxrContext(),
                 boxBody, pivot, rotation, rotation);
 
+        sxrTestUtils.waitForXFrames(10);
         ball.attachComponent(constraint);
         listener.waitUntilAdded();
         world.setEnable(true);
 
-        boxBody.applyCentralForce(100f, 0f, 100f);
+        ballBody.applyCentralForce(100f, 0f, 100f);
         listener.waitForXSteps(180);
-        d = transformsDistance(ball.getTransform(), box.getTransform());
+        d = transformsDistance(ballTrans, boxTrans);
         mWaiter.assertTrue(maxDistance >= d);
 
-        boxBody.applyCentralForce(-500f, 0f, 0f);
+        ballBody.applyCentralForce(-500f, 0f, 0f);
         listener.waitForXSteps(180);
-        d = transformsDistance(ball.getTransform(), box.getTransform());
+        d = transformsDistance(ballTrans, boxTrans);
         mWaiter.assertTrue(maxDistance >= d);
         sxrTestUtils.waitForXFrames(30);
    }
