@@ -827,7 +827,7 @@ public class MeshTests
         /*
          * Animation to rotate bone1
          */
-        SXRAnimationChannel channel1 = new SXRAnimationChannel("bone1", 1, 4, 0, null, null);
+        SXRAnimationChannel channel1 = new SXRAnimationChannel("bone1", 1, 4, 0);
         Quaternionf q = new Quaternionf();
 
         channel1.setPosKeyVector(0, 0, -2, 1, 0);
@@ -846,7 +846,7 @@ public class MeshTests
         /*
          * Animation to rotate bone2
          */
-        SXRAnimationChannel channel2 = new SXRAnimationChannel("bone2", 1, 4, 0, null, null);
+        SXRAnimationChannel channel2 = new SXRAnimationChannel("bone2", 1, 4, 0);
 
         channel2.setPosKeyVector(0, 0, 2, 1, 0);
         q.rotationXYZ(0, 0, (float) Math.PI / 4);
