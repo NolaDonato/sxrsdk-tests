@@ -50,6 +50,28 @@ public class PhysicsEventHandler implements SXRWorld.IPhysicsEvents
     }
 
     @Override
+    public void onAddRootJoint(SXRWorld world, SXRPhysicsJoint joint)
+    {
+        if (mNumObjects > 0)
+        {
+            if (--mNumObjects == 0)
+            {
+                mTester.onAssetLoaded(null);
+            }
+            if (mNumObjects < 0)
+            {
+                Log.e("PHYSICS", "Joint added after limit");
+            }
+        }
+    }
+
+    @Override
+    public void onRemoveRootJoint(SXRWorld world, SXRPhysicsJoint joint)
+    {
+
+    }
+
+    @Override
     public void onAddConstraint(SXRWorld world, SXRConstraint constraint)
     {
         if (mNumObjects > 0)
