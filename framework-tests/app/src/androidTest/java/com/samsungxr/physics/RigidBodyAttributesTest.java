@@ -48,7 +48,8 @@ public class RigidBodyAttributesTest {
     }
 
     @Test
-    public void createRigidBody()  {
+    public void createRigidBody()
+    {
         SXRRigidBody mSphereRigidBody = new SXRRigidBody(sxrTestUtils.getSxrContext(), 2.5f);
         addSphere(sxrTestUtils.getMainScene(), mSphereRigidBody, 1.5f, 40.0f, -10.0f);
         mWaiter.assertTrue(mSphereRigidBody.getMass() == 2.5f);
@@ -57,7 +58,8 @@ public class RigidBodyAttributesTest {
     }
 
     @Test
-    public void enableRigidBody()  {
+    public void enableRigidBody()
+    {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
         world.getEventReceiver().addListener(listener);
 
@@ -96,22 +98,74 @@ public class RigidBodyAttributesTest {
         newY2 = mSphereRigidBody2.getTransform().getPositionY();
         mWaiter.assertTrue( lastY > newY); //ball1 is falling again
         mWaiter.assertTrue( lastY2 > newY2); //ball2 kept falling
-
     }
 
-    private SXRNode meshWithTexture(String mesh, String texture) {
+    @Test
+    public void createJoint()
+    {
+        SXRPhysicsJoint mSphereJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 0);
+        addSphere(sxrTestUtils.getMainScene(), mSphereJoint, 1.5f, 40.0f, -10.0f);
+        mWaiter.assertTrue(mSphereJoint.getMass() == 2.5f);
+    }
+
+    @Test
+    public void enableJoint()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
+        world.getEventReceiver().addListener(listener);
+
+        SXRPhysicsJoint sphereJoint1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 1);
+        addSphere(sxrTestUtils.getMainScene(), sphereJoint1,  1.0f, 10.0f, -10.0f);
+
+        SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 0, 2.5f);
+        addSphere(sxrTestUtils.getMainScene(), sphereJoint2, 2.0f, 10.0f, -10.0f);
+
+        listener.waitUntilAdded();
+        world.setEnable(true);
+        listener.waitForXSteps(10);
+
+        float lastY = sphereJoint1.getTransform().getPositionY();
+        float lastY2 =  sphereJoint2.getTransform().getPositionY();
+        listener.waitForXSteps(10);
+        float newY = sphereJoint1.getTransform().getPositionY();
+        float newY2 = sphereJoint2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY > newY);//balls are falling
+        mWaiter.assertTrue( lastY2 > newY2);
+
+        lastY = sphereJoint1.getTransform().getPositionY();
+        lastY2 =  sphereJoint2.getTransform().getPositionY();
+        sphereJoint1.setEnable(false);
+        listener.waitForXSteps(60);
+        newY = sphereJoint1.getTransform().getPositionY();
+        newY2 = sphereJoint2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY == newY); //ball1 stoped falling
+        mWaiter.assertTrue( lastY2 > newY2); //ball2 is falling
+
+        lastY = sphereJoint1.getTransform().getPositionY();
+        lastY2 =  sphereJoint2.getTransform().getPositionY();
+        sphereJoint1.setEnable(true);
+        listener.waitForXSteps(10);
+        newY = sphereJoint1.getTransform().getPositionY();
+        newY2 = sphereJoint2.getTransform().getPositionY();
+        mWaiter.assertTrue( lastY > newY); //ball1 is falling again
+        mWaiter.assertTrue( lastY2 > newY2); //ball2 kept falling
+    }
+
+    private SXRNode meshWithTexture(String mesh, String texture)
+    {
         SXRNode object = null;
-        try {
-            object = new SXRNode(sxrTestUtils.getSxrContext(), new SXRAndroidResource(
-                    sxrTestUtils.getSxrContext(), mesh), new SXRAndroidResource(sxrTestUtils.getSxrContext(),
-                    texture));
-        } catch (IOException e) {
+        SXRContext ctx = sxrTestUtils.getSxrContext();
+        try
+        {
+            object = new SXRNode(ctx, new SXRAndroidResource(ctx, mesh), new SXRAndroidResource(ctx, texture));
+        } catch (IOException e)
+        {
             mWaiter.fail(e);
         }
         return object;
     }
 
-    private void addSphere(SXRScene scene, SXRRigidBody sphereRigidBody, float x, float y, float z) {
+    private void addSphere(SXRScene scene, SXRPhysicsWorldObject sphereBody, float x, float y, float z) {
 
         SXRNode sphereObject = meshWithTexture("sphere.obj", "sphere.jpg");
         sphereObject.getTransform().setPosition(x, y, z);
@@ -122,9 +176,16 @@ public class RigidBodyAttributesTest {
         sphereObject.attachCollider(sphereCollider);
 
         // Physics body
-        sphereRigidBody.setRestitution(1.5f);
-        sphereRigidBody.setFriction(0.5f);
+        if ((sphereBody instanceof SXRRigidBody))
+        {
+            ((SXRRigidBody) sphereBody).setRestitution(1.5f);
+            ((SXRRigidBody) sphereBody).setFriction(0.5f);
+        }
+        else
+        {
+            ((SXRPhysicsJoint) sphereBody).setFriction(0.5f);
+        }
         scene.addNode(sphereObject);
-        sphereObject.attachComponent(sphereRigidBody);
+        sphereObject.attachComponent(sphereBody);
     }
 }

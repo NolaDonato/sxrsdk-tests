@@ -160,7 +160,7 @@ public class PhysicsSimulationTest {
         listener.waitForXSteps(168);
         float d = (sphere.getTransform().getPositionY() - cube.getTransform().getPositionY()); //sphere is on top of the cubeROP
         mWaiter.assertTrue( d <= 1.6f);
-        Log.d("PHYSICS", "    Number of collisions:" + mCollisionHandler.collisionCounter);
+        Log.d(TAG, "    Number of collisions:" + mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(mCollisionHandler.collisionCounter >= 1);
     }
 
@@ -170,7 +170,7 @@ public class PhysicsSimulationTest {
         collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
         collisionTest.runTest(168);
         //sxrTestUtils.getMainScene().getRoot().detachComponent(SXRWorld.getComponentType());
-        Log.d("PHYSICS", "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
+        Log.d(TAG, "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
@@ -181,7 +181,7 @@ public class PhysicsSimulationTest {
         collisionTest.mCollisionHandler.startTime = System.currentTimeMillis();
         collisionTest.runTest(168);
         //sxrTestUtils.getMainScene().getRoot().detachComponent(SXRWorld.getComponentType());
-        Log.d("PHYSICS", "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
+        Log.d(TAG, "    Number of collisions: " + collisionTest.mCollisionHandler.collisionCounter);
         mWaiter.assertTrue(collisionTest.mCollisionHandler.collisionCounter >= collisionTest.length);
     }
 
@@ -313,7 +313,7 @@ public class PhysicsSimulationTest {
                 mWaiter.assertTrue( d <= 1.6f);
                 mWaiter.assertTrue(Math.abs(sphereX - cubeX) < 0.05f);
                 mWaiter.assertTrue(Math.abs(sphereZ - cubeZ) < 0.05f);
-                //Log.d("PHYSICS", "    Index:" + i + "    Collision distance:" + d);
+                //Log.d(TAG, "    Index:" + i + "    Collision distance:" + d);
             }
             mEventHandler.waitForXSteps(30);
         }
@@ -351,29 +351,34 @@ public class PhysicsSimulationTest {
     }
 
 
-    public class CollisionHandler implements ICollisionEvents {
+    public class CollisionHandler implements ICollisionEvents
+    {
         public long startTime;
         public long extimatedTime;
         public long lastCollisionTime;
         public int collisionCounter;
 
-        public void onEnter(SXRNode sceneObj0, SXRNode sceneObj1, float normal[], float distance) {
+        public void onEnter(SXRNode sceneObj0, SXRNode sceneObj1, float normal[], float distance)
+        {
             lastCollisionTime = System.currentTimeMillis() - startTime;
             collisionCounter++;
         }
 
-        public void onExit(SXRNode sceneObj0, SXRNode sceneObj1, float normal[], float distance) {
-        }
+        public void onExit(SXRNode sceneObj0, SXRNode sceneObj1, float normal[], float distance) { }
 
     }
 
-    private SXRNode meshWithTexture(String mesh, String texture) {
+    private SXRNode meshWithTexture(String mesh, String texture)
+    {
         SXRNode object = null;
-        try {
+        try
+        {
             object = new SXRNode(context,
                     new SXRAndroidResource(context, mesh),
                     new SXRAndroidResource(context, texture));
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             mWaiter.fail(e);
         }
         return object;
@@ -383,17 +388,18 @@ public class PhysicsSimulationTest {
      * Function to add a sphere of dimension and position specified in the
      * Bullet physics world and scene graph
      */
-    private SXRNode addSphere(SXRScene scene, ICollisionEvents mCollisionHandler, float x, float y, float z, float mass) {
-
-        if (sphereMesh == null) {
-            try {
+    private SXRNode addSphere(SXRScene scene, ICollisionEvents mCollisionHandler, float x, float y, float z, float mass)
+    {
+        if (sphereMesh == null)
+        {
+            try
+            {
                 sphereMesh = context.getAssetLoader().loadMesh(
                         new SXRAndroidResource(context, "sphere.obj"));
                 sphereTexture = context.getAssetLoader().loadTexture(
                         new SXRAndroidResource(context, "sphere.jpg"));
-            } catch (IOException e) {
-
             }
+            catch (IOException e) { }
         }
 
         SXRNode sphereObject = new SXRNode(context, sphereMesh, sphereTexture);
@@ -420,15 +426,19 @@ public class PhysicsSimulationTest {
         return sphereObject;
     }
 
-    private SXRNode addCube(SXRScene scene, float x, float y, float z, float mass) {
-
-        if (cubeMesh == null) {
-            try {
+    private SXRNode addCube(SXRScene scene, float x, float y, float z, float mass)
+    {
+        if (cubeMesh == null)
+        {
+            try
+            {
                 cubeMesh = context.getAssetLoader().loadMesh(
                         new SXRAndroidResource(context, "cube.obj"));
                 cubeTexture = context.getAssetLoader().loadTexture(
                         new SXRAndroidResource(context, "cube.jpg"));
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
         }
@@ -452,8 +462,10 @@ public class PhysicsSimulationTest {
         return cubeObject;
     }
 
-    private void addGroundMesh(SXRScene scene, float x, float y, float z, float mass) {
-        try {
+    private void addGroundMesh(SXRScene scene, float x, float y, float z, float mass)
+    {
+        try
+        {
             SXRMesh mesh = context.createQuad(100.0f, 100.0f);
             SXRTexture texture =
                     context.getAssetLoader().loadTexture(new SXRAndroidResource(context, "floor.jpg"));
@@ -476,8 +488,10 @@ public class PhysicsSimulationTest {
 
             meshObject.attachComponent(body);
 
-        } catch (IOException exception) {
-            Log.d("sxrf", exception.toString());
+        }
+        catch (IOException exception)
+        {
+            Log.d(TAG, exception.toString());
         }
     }
 }
