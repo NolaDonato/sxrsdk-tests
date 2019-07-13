@@ -100,56 +100,6 @@ public class RigidBodyAttributesTest {
         mWaiter.assertTrue( lastY2 > newY2); //ball2 kept falling
     }
 
-    @Test
-    public void createJoint()
-    {
-        SXRPhysicsJoint mSphereJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 0);
-        addSphere(sxrTestUtils.getMainScene(), mSphereJoint, 1.5f, 40.0f, -10.0f);
-        mWaiter.assertTrue(mSphereJoint.getMass() == 2.5f);
-    }
-
-    @Test
-    public void enableJoint()
-    {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
-        world.getEventReceiver().addListener(listener);
-
-        SXRPhysicsJoint sphereJoint1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 1);
-        addSphere(sxrTestUtils.getMainScene(), sphereJoint1,  1.0f, 10.0f, -10.0f);
-
-        SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 0, 2.5f);
-        addSphere(sxrTestUtils.getMainScene(), sphereJoint2, 2.0f, 10.0f, -10.0f);
-
-        listener.waitUntilAdded();
-        world.setEnable(true);
-        listener.waitForXSteps(10);
-
-        float lastY = sphereJoint1.getTransform().getPositionY();
-        float lastY2 =  sphereJoint2.getTransform().getPositionY();
-        listener.waitForXSteps(10);
-        float newY = sphereJoint1.getTransform().getPositionY();
-        float newY2 = sphereJoint2.getTransform().getPositionY();
-        mWaiter.assertTrue( lastY > newY);//balls are falling
-        mWaiter.assertTrue( lastY2 > newY2);
-
-        lastY = sphereJoint1.getTransform().getPositionY();
-        lastY2 =  sphereJoint2.getTransform().getPositionY();
-        sphereJoint1.setEnable(false);
-        listener.waitForXSteps(60);
-        newY = sphereJoint1.getTransform().getPositionY();
-        newY2 = sphereJoint2.getTransform().getPositionY();
-        mWaiter.assertTrue( lastY == newY); //ball1 stoped falling
-        mWaiter.assertTrue( lastY2 > newY2); //ball2 is falling
-
-        lastY = sphereJoint1.getTransform().getPositionY();
-        lastY2 =  sphereJoint2.getTransform().getPositionY();
-        sphereJoint1.setEnable(true);
-        listener.waitForXSteps(10);
-        newY = sphereJoint1.getTransform().getPositionY();
-        newY2 = sphereJoint2.getTransform().getPositionY();
-        mWaiter.assertTrue( lastY > newY); //ball1 is falling again
-        mWaiter.assertTrue( lastY2 > newY2); //ball2 kept falling
-    }
 
     private SXRNode meshWithTexture(String mesh, String texture)
     {
