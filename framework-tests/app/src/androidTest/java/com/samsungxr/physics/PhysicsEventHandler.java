@@ -50,7 +50,7 @@ public class PhysicsEventHandler implements SXRWorld.IPhysicsEvents
     }
 
     @Override
-    public void onAddRootJoint(SXRWorld world, SXRPhysicsJoint joint)
+    public void onAddJoint(SXRWorld world, SXRPhysicsJoint joint)
     {
         if (mNumObjects > 0)
         {
@@ -66,7 +66,7 @@ public class PhysicsEventHandler implements SXRWorld.IPhysicsEvents
     }
 
     @Override
-    public void onRemoveRootJoint(SXRWorld world, SXRPhysicsJoint joint)
+    public void onRemoveJoint(SXRWorld world, SXRPhysicsJoint joint)
     {
 
     }
