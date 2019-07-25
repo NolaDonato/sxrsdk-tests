@@ -10,6 +10,7 @@ import com.samsungxr.SXRMaterial;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRScene;
 import com.samsungxr.SXRSphereCollider;
+import com.samsungxr.SXRTexture;
 import com.samsungxr.nodes.SXRCubeNode;
 import com.samsungxr.nodes.SXRSphereNode;
 import com.samsungxr.unittestutils.SXRTestUtils;
@@ -27,7 +28,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 /**
- * Instrumentation test, which will execute on an Android device.
+ * Physics Joint Tests for MultiBody support
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
@@ -47,7 +48,7 @@ public class PhysicsJointTest
         mWaiter = new Waiter();
         sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
-        mWorld = new SXRWorld(sxrTestUtils.getMainScene());
+        mWorld = new SXRWorld(sxrTestUtils.getMainScene(), true);
     }
 
     @Test
@@ -67,11 +68,11 @@ public class PhysicsJointTest
 
         SXRPhysicsJoint sphereJoint1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 1);
         SXRNode sphere1 = addSphere(sxrTestUtils.getMainScene(),1.0f, 10.0f, -10.0f);
-        SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 0, 2.5f);
+        SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 1, 2.5f);
         SXRNode sphere2 = addSphere(sxrTestUtils.getMainScene(),2.0f, 10.0f, -10.0f);
 
-        sphere2.attachComponent(sphereJoint2);
         sphere1.attachComponent(sphereJoint1);
+        sphere2.attachComponent(sphereJoint2);
         listener.waitUntilAdded();
         mWorld.setEnable(true);
         listener.waitForXSteps(10);
@@ -109,11 +110,11 @@ public class PhysicsJointTest
         SXRContext context = sxrTestUtils.getSxrContext();
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(context,  10.0f, 1);
-        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 0, 2.0f);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 2.0f);
         SXRNode box = addCube(scene, 0, -3, 0);
         SXRNode sphere = addSphere(scene, 0, 3, 0);
-        sphere.attachComponent(firstJoint);
         box.attachComponent(rootJoint);
+        sphere.attachComponent(firstJoint);
         mWorld.setEnable(true);
     }
 
