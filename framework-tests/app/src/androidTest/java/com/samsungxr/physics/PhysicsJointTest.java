@@ -70,6 +70,8 @@ public class PhysicsJointTest
         SXRNode sphere1 = addSphere(sxrTestUtils.getMainScene(),1.0f, 10.0f, -10.0f);
         SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 1, 2.5f);
         SXRNode sphere2 = addSphere(sxrTestUtils.getMainScene(),2.0f, 10.0f, -10.0f);
+        final float jointPos[] = { -1, 0f, 0f };
+        final float rotation[] = { 1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f };
 
         sphere1.attachComponent(sphereJoint1);
         sphere2.attachComponent(sphereJoint2);

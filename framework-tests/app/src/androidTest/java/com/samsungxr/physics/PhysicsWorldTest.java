@@ -45,7 +45,7 @@ public class PhysicsWorldTest {
             @Override
             public void onInit(SXRContext sxrContext) {
                 mWorld = new SXRWorld(sxrTestUtils.getMainScene());
-                sxrContext.getMainScene().getRoot().attachComponent(mWorld);
+                mWorld.setEnable(true);
             }
         };
 
