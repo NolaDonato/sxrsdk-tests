@@ -11,6 +11,7 @@ import com.samsungxr.SXRNode;
 import com.samsungxr.SXRScene;
 import com.samsungxr.SXRSphereCollider;
 import com.samsungxr.SXRTexture;
+import com.samsungxr.SXRTransform;
 import com.samsungxr.nodes.SXRCubeNode;
 import com.samsungxr.nodes.SXRSphereNode;
 import com.samsungxr.unittestutils.SXRTestUtils;
@@ -56,6 +57,7 @@ public class PhysicsJointTest
     {
         SXRPhysicsJoint sphereJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 0);
         SXRNode sphere = addSphere(sxrTestUtils.getMainScene(),1.5f, 40.0f, -10.0f);
+        sxrTestUtils.getMainScene().addNode(sphere);
         sphere.attachComponent(sphereJoint);
         mWaiter.assertTrue(sphereJoint.getMass() == 2.5f);
     }
@@ -73,6 +75,8 @@ public class PhysicsJointTest
         final float jointPos[] = { -1, 0f, 0f };
         final float rotation[] = { 1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f };
 
+        sxrTestUtils.getMainScene().addNode(sphere1);
+        sphere1.addChildObject(sphere2);
         sphere1.attachComponent(sphereJoint1);
         sphere2.attachComponent(sphereJoint2);
         listener.waitUntilAdded();
@@ -115,9 +119,55 @@ public class PhysicsJointTest
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 2.0f);
         SXRNode box = addCube(scene, 0, -3, 0);
         SXRNode sphere = addSphere(scene, 0, 3, 0);
+
+        sxrTestUtils.getMainScene().addNode(box);
+        box.addChildObject(sphere);
         box.attachComponent(rootJoint);
         sphere.attachComponent(firstJoint);
         mWorld.setEnable(true);
+    }
+
+    @Test
+    public void testFixedConstraint()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        mWorld.getEventReceiver().addListener(listener);
+        SXRScene scene = sxrTestUtils.getMainScene();
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10.0f, 1);
+        SXRPhysicsJoint firstLink = new SXRPhysicsJoint(rootJoint, 1, 10.0f);
+
+        SXRNode box1 = addCube(scene, 0f, 0.5f, -30f);
+        scene.addNode(box1);
+
+        SXRNode box2 = addCube(scene, 0f, 0, 15f);
+        box1.addChildObject(box2);
+        box1.attachComponent(rootJoint);
+
+        SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), firstLink);
+        box2.attachComponent(firstLink);
+        box2.attachComponent(constraint);
+        sxrTestUtils.waitForXFrames(10);
+
+        listener.waitUntilAdded();
+        mWorld.setEnable(true);
+        float distance = transformDistance(box1.getTransform(), box2.getTransform());
+
+        rootJoint.applyTorque(0, 0, 200);
+        listener.waitForXSteps(120);
+        float rotation = Math.abs(box1.getTransform().getRotationX() - box2.getTransform().getRotationX())
+            + Math.abs(box1.getTransform().getRotationY() - box2.getTransform().getRotationY())
+            + Math.abs(box1.getTransform().getRotationZ() - box2.getTransform().getRotationZ());
+        mWaiter.assertTrue(rotation < 0.2f);
+        mWaiter.assertTrue(Math.abs(distance - transformDistance(box1.getTransform(), box2.getTransform())) < 0.2);
+
+        firstLink.applyCentralForce(300, 0, 300);
+        listener.waitForXSteps(180);
+        rotation = Math.abs(box1.getTransform().getRotationX() - box2.getTransform().getRotationX())
+            + Math.abs(box1.getTransform().getRotationY() - box2.getTransform().getRotationY())
+            + Math.abs(box1.getTransform().getRotationZ() - box2.getTransform().getRotationZ());
+        mWaiter.assertTrue(rotation < 0.2f);
+        mWaiter.assertTrue(Math.abs(distance - transformDistance(box1.getTransform(), box2.getTransform())) < 0.2);
+        sxrTestUtils.waitForXFrames(30);
     }
 
 
@@ -133,7 +183,6 @@ public class PhysicsJointTest
         blue.setDiffuseColor(0, 0, 1, 1);
         cubeObject.getTransform().setPosition(x, y, z);
         cubeObject.setName("cube");
-        scene.addNode(cubeObject);
         boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
         cubeObject.attachCollider(boxCollider);
         return cubeObject;
@@ -151,10 +200,17 @@ public class PhysicsJointTest
         sphereObject.getTransform().setScaleZ(0.5f);
         sphereObject.getTransform().setPosition(x, y, z);
         sphereObject.setName("ball");
-        scene.addNode(sphereObject);
         SXRSphereCollider sphereCollider = new SXRSphereCollider(ctx);
         sphereCollider.setRadius(0.5f);
         sphereObject.attachCollider(sphereCollider);
         return sphereObject;
+    }
+
+    float transformDistance(SXRTransform a, SXRTransform b) {
+        float x = a.getPositionX() - b.getPositionX();
+        float y = a.getPositionY() - b.getPositionY();
+        float z = a.getPositionZ() - b.getPositionZ();
+
+        return (float)Math.sqrt(x * x + y * y + z * z);
     }
 }
