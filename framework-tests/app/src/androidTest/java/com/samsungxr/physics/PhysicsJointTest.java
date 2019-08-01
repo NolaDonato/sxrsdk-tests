@@ -8,6 +8,8 @@ import com.samsungxr.SXRBoxCollider;
 import com.samsungxr.SXRCameraRig;
 import com.samsungxr.SXRContext;
 import com.samsungxr.SXRMaterial;
+import com.samsungxr.SXRMesh;
+import com.samsungxr.SXRMeshCollider;
 import com.samsungxr.SXRNode;
 import com.samsungxr.SXRScene;
 import com.samsungxr.SXRSphereCollider;
@@ -42,7 +44,8 @@ public class PhysicsJointTest
 {
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
-    SXRWorld mWorld;
+    private static final String TAG = "PHYSICS";
+    private SXRWorld mWorld;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -69,95 +72,126 @@ public class PhysicsJointTest
         mWaiter.assertTrue(sphereJoint.getMass() == 2.5f);
     }
 
-    @Test
-    public void testEnableJoint()
-    {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
-        mWorld.getEventReceiver().addListener(listener);
-
-        SXRPhysicsJoint sphereJoint1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 2.5f, 2);
-        SXRNode sphere1 = addSphere(1, 5, -10);
-        SXRPhysicsJoint sphereJoint2 = new SXRPhysicsJoint(sphereJoint1, 1, 2.5f);
-        SXRNode sphere2 = addSphere(1, 0, 0);
-
-        sxrTestUtils.getMainScene().addNode(sphere1);
-        sphere1.setName("ball1");
-        sphere2.setName("ball2");
-        sphere1.addChildObject(sphere2);
-        sphere1.attachComponent(sphereJoint1);
-        sphere2.attachComponent(sphereJoint2);
-        listener.waitUntilAdded();
-        sxrTestUtils.waitForXFrames(10);
-
-        mWorld.setEnable(true);
-        listener.waitForXSteps(10);
-
-        Vector3f lastRoot = getWorldPosition(sphereJoint1);
-        Vector3f lastLink = getWorldPosition(sphereJoint2);
-        listener.waitForXSteps(10);
-        Vector3f nextRoot = getWorldPosition(sphereJoint1);
-        Vector3f nextLink = getWorldPosition(sphereJoint2);
-        mWaiter.assertTrue( lastRoot.y > nextRoot.y);//balls are falling
-        mWaiter.assertTrue( lastLink.y > nextLink.y);
-
-        lastRoot = getWorldPosition(sphereJoint1);
-        lastLink = getWorldPosition(sphereJoint2);
-        sphereJoint2.setEnable(false);
-        listener.waitForXSteps(60);
-        nextRoot = getWorldPosition(sphereJoint1);
-        nextLink = getWorldPosition(sphereJoint2);
-        mWaiter.assertTrue( lastRoot.y > nextRoot.y); //ball1 is falling
-        mWaiter.assertTrue( Math.abs(lastLink.y - nextLink.y) < 0.0001f); //ball2 stopped falling
-
-        lastRoot = getWorldPosition(sphereJoint1);
-        lastLink = getWorldPosition(sphereJoint2);
-        sphereJoint2.setEnable(true);
-        listener.waitForXSteps(10);
-        nextRoot = getWorldPosition(sphereJoint1);
-        nextLink = getWorldPosition(sphereJoint2);
-        mWaiter.assertTrue( lastRoot.y > nextRoot.y);//balls are falling
-        mWaiter.assertTrue( lastLink.y > nextLink.y);
-    }
 
     @Test
-    public void testFixedConstraint()
+    public void testTorque()
     {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10.0f, 2);
-        SXRPhysicsJoint firstLink = new SXRPhysicsJoint(rootJoint, 1, 10.0f);
-        SXRNode box1 = addCube(0f, 0.5f, -30f);
-        SXRNode box2 = addCube(0f, 0, 15f);
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 10);
+        SXRNode ground = addGround(0, -8, 0);
+        SXRNode box = addCube(0f, 3, -10);
+        SXRNode ball = addSphere(0f, -2, 0);
 
-        scene.addNode(box1);
-        box1.addChildObject(box2);
-        box1.attachComponent(rootJoint);
-
-        SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), rootJoint);
-        box2.attachComponent(firstLink);
-        box2.attachComponent(constraint);
-        sxrTestUtils.waitForXFrames(10);
+        scene.addNode(ground);
+        scene.addNode(box);
+        box.addChildObject(ball);
+        box.attachComponent(rootJoint);
+        ball.attachComponent(firstJoint);
 
         listener.waitUntilAdded();
         mWorld.setEnable(true);
-        float distance = transformDistance(box1.getTransform(), box2.getTransform());
+        firstJoint.applyTorque(100,0,0);
+        listener.waitForXSteps(100);
 
-        rootJoint.applyTorque(0, 0, 200);
-        listener.waitForXSteps(120);
-        Quaternionf rot1 = getWorldRotation(rootJoint);
-        Quaternionf rot2 = getWorldRotation(firstLink);
-        float rotation = Math.abs(rot1.x - rot2.x) + Math.abs(rot1.y - rot2.y) + Math.abs(rot1.z - rot2.z);
-        mWaiter.assertTrue(rotation < 0.2f);
-        mWaiter.assertTrue(Math.abs(distance - transformDistance(box1.getTransform(), box2.getTransform())) < 0.2);
+        Vector3f boxPos = getWorldPosition(rootJoint);
+        Vector3f ballPos = getWorldPosition(firstJoint);
 
-        firstLink.applyCentralForce(300, 0, 300);
-        listener.waitForXSteps(180);
-        rot1 = getWorldRotation(rootJoint);
-        rot2 = getWorldRotation(firstLink);
-        rotation = Math.abs(rot1.x - rot2.x) + Math.abs(rot1.y - rot2.y) + Math.abs(rot1.z - rot2.z);
-        mWaiter.assertTrue(rotation < 0.2f);
-        mWaiter.assertTrue(Math.abs(distance - transformDistance(box1.getTransform(), box2.getTransform())) < 0.2);
+        mWaiter.assertTrue(boxPos.y > -8);
+        mWaiter.assertTrue(ballPos.y > -8);
+        sxrTestUtils.waitForXFrames(30);
+    }
+
+
+    @Test
+    public void testGravity()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        mWorld.getEventReceiver().addListener(listener);
+        SXRScene scene = sxrTestUtils.getMainScene();
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 10);
+        SXRNode ground = addGround(0, -8, 0);
+        SXRNode box = addCube(0f, 3, -10);
+        SXRNode ball = addSphere(0f, -2, 0);
+
+        scene.addNode(ground);
+        scene.addNode(box);
+        box.addChildObject(ball);
+        box.attachComponent(rootJoint);
+        ball.attachComponent(firstJoint);
+
+        listener.waitUntilAdded();
+        mWorld.setEnable(true);
+        listener.waitForXSteps(100);
+
+        Vector3f boxPos = getWorldPosition(rootJoint);
+        Vector3f ballPos = getWorldPosition(firstJoint);
+
+        mWaiter.assertTrue(boxPos.y > -3);
+        mWaiter.assertTrue(ballPos.y > -3);
+        sxrTestUtils.waitForXFrames(30);
+    }
+
+    @Test
+    public void testHingeConstraint()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        mWorld.getEventReceiver().addListener(listener);
+
+        float pivotInA[] = { 0f, -3f, 0f };
+        float pivotInB[] = { 0f, 3f, 0f };
+        float axisInA[] = { 0, 0, 1 };
+        float axisInB[] = { 0, 0, 1 };
+
+        Vector3f ballPos = new Vector3f();
+        Vector3f boxPos = new Vector3f();
+        SXRNode ball = addSphere( 0.0f, 8.0f, -10.0f);
+        SXRNode box = addCube(0.0f, -8.0f, 0);
+        SXRTransform ballTrans = ball.getTransform();
+        SXRTransform boxTrans = box.getTransform();
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 1);
+        SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(),
+                rootJoint, pivotInA, pivotInB, axisInA, axisInB);
+
+        constraint.setLimits(-1f, 1f);
+        sxrTestUtils.getMainScene().addNode(ball);
+        ball.addChildObject(box);
+        ball.attachComponent(rootJoint);
+        box.attachComponent(firstJoint);
+        box.attachComponent(constraint);
+        listener.waitUntilAdded();
+        mWorld.setEnable(true);
+
+        listener.waitForXSteps(10);
+        firstJoint.applyTorque(100, 100, 100);
+        listener.waitForXSteps(100);
+        Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
+        Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        float dist = boxPos.sub(ballPos).length();
+        mWaiter.assertTrue(boxPos.y < -7);
+        mWaiter.assertTrue(Math.abs(boxPos.x) < 1.3);
+        mWaiter.assertTrue(ballPos.y == 8);
+        mWaiter.assertTrue((dist < 19) && (dist > 18));
+
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dist = boxPos.sub(ballPos).length();
+        mWaiter.assertTrue(boxPos.y < -7);
+        mWaiter.assertTrue(ballPos.y == 8);
+        mWaiter.assertTrue(Math.abs(boxPos.x) < 1.3);
+        mWaiter.assertTrue((dist < 19) && (dist > 18));
+
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -238,6 +272,33 @@ public class PhysicsJointTest
         sphereCollider.setRadius(1);
         sphereObject.attachCollider(sphereCollider);
         return sphereObject;
+    }
+
+    private SXRNode addGround(float x, float y, float z)
+    {
+        try
+        {
+            SXRContext ctx = sxrTestUtils.getSxrContext();
+            SXRTexture tex = ctx.getAssetLoader().loadTexture(new SXRAndroidResource(ctx, "floor.jpg"));
+            SXRMaterial mtl = new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID);
+            SXRNode ground = new SXRCubeNode(ctx, true, mtl, new Vector3f(100, 10, 100));
+            SXRMeshCollider collider = new SXRMeshCollider(ctx, true);
+            SXRRigidBody body = new SXRRigidBody(ctx, 0.0f);
+
+            mtl.setMainTexture(tex);
+            ground.getTransform().setPosition(x, y, z);
+            ground.setName("ground");
+            ground.attachCollider(collider);
+            body.setRestitution(0.5f);
+            body.setFriction(1.0f);
+            ground.attachComponent(body);
+            return ground;
+        }
+        catch (IOException exception)
+        {
+           mWaiter.fail(exception);
+           return null;
+        }
     }
 
     float transformDistance(SXRTransform a, SXRTransform b)
