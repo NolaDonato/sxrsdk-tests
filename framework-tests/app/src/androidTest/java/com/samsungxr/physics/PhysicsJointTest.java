@@ -143,8 +143,7 @@ public class PhysicsJointTest
 
         float pivotInA[] = { 0f, -3f, 0f };
         float pivotInB[] = { 0f, 3f, 0f };
-        float axisInA[] = { 0, 0, 1 };
-        float axisInB[] = { 0, 0, 1 };
+        float axisIn[] = { 0, 0, 1 };
 
         Vector3f ballPos = new Vector3f();
         Vector3f boxPos = new Vector3f();
@@ -155,7 +154,7 @@ public class PhysicsJointTest
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 1);
         SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(),
-                rootJoint, pivotInA, pivotInB, axisInA, axisInB);
+                rootJoint, pivotInA, pivotInB, axisIn);
 
         constraint.setLimits(-1f, 1f);
         sxrTestUtils.getMainScene().addNode(ball);
@@ -199,12 +198,11 @@ public class PhysicsJointTest
     public void testGenericConstraint()
     {
         final float joint[] = {-6f, 0f, 0f};
-        final float rotation[] = {1f, 0f, 0f, 0f, 1f, 0f, 0f, 0f, 1f};
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint boxJoint = new SXRPhysicsJoint(rootJoint, 1, 1.0f);
-        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), rootJoint, joint, rotation, rotation);
+        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), rootJoint, joint);
         SXRNode ball = addSphere(3f, 0f, -10f);
         SXRNode box = addCube(-6, 0f, 0);
         SXRTransform ballTrans = ball.getTransform();
@@ -301,17 +299,6 @@ public class PhysicsJointTest
         }
     }
 
-    float transformDistance(SXRTransform a, SXRTransform b)
-    {
-        Matrix4f ma = a.getModelMatrix4f();
-        Matrix4f mb = b.getModelMatrix4f();
-        Vector3f pa = new Vector3f();
-        Vector3f pb = new Vector3f();
-
-        ma.getTranslation(pa);
-        mb.getTranslation(pb);
-        return pb.sub(pa).length();
-    }
 
     Vector3f getWorldPosition(SXRPhysicsJoint j)
     {
