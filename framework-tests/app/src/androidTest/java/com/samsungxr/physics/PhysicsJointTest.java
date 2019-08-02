@@ -141,14 +141,14 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
 
-        float pivotInA[] = { 0f, -3f, 0f };
-        float pivotInB[] = { 0f, 3f, 0f };
+        float pivotInA[] = { 0,  0, 0 };
+        float pivotInB[] = { 0, 8, 0 };
         float axisIn[] = { 0, 0, 1 };
 
         Vector3f ballPos = new Vector3f();
         Vector3f boxPos = new Vector3f();
-        SXRNode ball = addSphere( 0.0f, 8.0f, -10.0f);
-        SXRNode box = addCube(0.0f, -8.0f, 0);
+        SXRNode ball = addSphere( 0, 8, -10);
+        SXRNode box = addCube(0, -8, 0);
         SXRTransform ballTrans = ball.getTransform();
         SXRTransform boxTrans = box.getTransform();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
@@ -175,8 +175,8 @@ public class PhysicsJointTest
         boxMtx.getTranslation(boxPos);
         float dist = boxPos.sub(ballPos).length();
         mWaiter.assertTrue(boxPos.y < -7);
-        mWaiter.assertTrue(Math.abs(boxPos.x) < 1.3);
-        mWaiter.assertTrue(ballPos.y == 8);
+        mWaiter.assertTrue(Math.abs(boxPos.x) < 3);
+        mWaiter.assertTrue(Math.abs(ballPos.y + 8) < 0.2);
         mWaiter.assertTrue((dist < 19) && (dist > 18));
 
         listener.waitForXSteps(100);
@@ -187,8 +187,8 @@ public class PhysicsJointTest
         boxMtx.getTranslation(boxPos);
         dist = boxPos.sub(ballPos).length();
         mWaiter.assertTrue(boxPos.y < -7);
-        mWaiter.assertTrue(ballPos.y == 8);
-        mWaiter.assertTrue(Math.abs(boxPos.x) < 1.3);
+        mWaiter.assertTrue(Math.abs(ballPos.y + 8) < 0.2);
+        mWaiter.assertTrue(Math.abs(boxPos.x) < 3);
         mWaiter.assertTrue((dist < 19) && (dist > 18));
 
         sxrTestUtils.waitForXFrames(30);
