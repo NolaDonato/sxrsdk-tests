@@ -111,7 +111,7 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 10);
         SXRNode ground = addGround(0, -8, 0);
         SXRNode box = addCube(0f, 3, -10);
@@ -141,7 +141,7 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
 
-        float pivotInA[] = { 0,  0, 0 };
+        float pivotInA[] = { 0, 0, 0 };
         float pivotInB[] = { 0, 8, 0 };
         float axisIn[] = { 0, 0, 1 };
 
@@ -166,7 +166,7 @@ public class PhysicsJointTest
         mWorld.setEnable(true);
 
         listener.waitForXSteps(10);
-        firstJoint.applyTorque(100, 100, 100);
+        firstJoint.applyTorque(100, 0, 0);
         listener.waitForXSteps(100);
         Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
         Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
@@ -191,6 +191,68 @@ public class PhysicsJointTest
         mWaiter.assertTrue(Math.abs(boxPos.x) < 3);
         mWaiter.assertTrue((dist < 19) && (dist > 18));
 
+        sxrTestUtils.waitForXFrames(30);
+    }
+
+    @Test
+    public void testSliderConstraint()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        mWorld.getEventReceiver().addListener(listener);
+
+        SXRNode ground = addGround(0f, 0f, -10);
+        SXRNode box1 = addCube(2, 0.5f, -15);
+        SXRNode box2 = addCube(-4, 0, 5);
+        SXRPhysicsJoint body1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
+        SXRPhysicsJoint body2 = new SXRPhysicsJoint(body1, 1, 1);
+        SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1);
+
+        box1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
+        box1.addChildObject(box2);
+        sxrTestUtils.getMainScene().addNode(ground);
+        sxrTestUtils.getMainScene().addNode(box1);
+        constraint.setAngularLowerLimit(-2f);
+        constraint.setAngularUpperLimit(2f);
+        constraint.setLinearLowerLimit(-5f);
+        constraint.setLinearUpperLimit(-2f);
+        box1.setName("cube1");
+        box2.setName("cube2");
+        box1.attachComponent(body1);
+        box2.attachComponent(body2);
+        sxrTestUtils.waitForXFrames(10);
+
+        Vector3f pos1 = getWorldPosition(body1);
+        Vector3f pos2 = getWorldPosition(body2);
+        Vector3f sliderAxis = new Vector3f();
+
+        pos1.sub(pos2, sliderAxis);
+        sliderAxis.normalize();
+        box2.attachComponent(constraint);
+
+        listener.waitUntilAdded();
+        mWorld.setEnable(true);
+        listener.waitForXSteps(30);
+
+        body2.applyTorque(-100, 0, 0);
+        listener.waitForXSteps(180);
+        pos1 = getWorldPosition(body1);
+        pos2 = getWorldPosition(body2);
+        Vector3f posDiff = new Vector3f();
+
+        pos1.sub(pos2, posDiff);
+        posDiff.normalize();
+        float dp = posDiff.dot(sliderAxis);
+
+        mWaiter.assertTrue((dp < 0.3f) || (dp > 0.8f));
+
+        body2.applyTorque(100, 0, 0);
+        listener.waitForXSteps(180);
+        pos1 = getWorldPosition(body1);
+        pos2 = getWorldPosition(body2);
+        pos1.sub(pos2, posDiff);
+        posDiff.normalize();
+        dp = Math.abs(posDiff.dot(sliderAxis));
+        mWaiter.assertTrue((dp < 0.3f) || (dp > 0.8f));
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -224,20 +286,14 @@ public class PhysicsJointTest
         float anchor[] = {ballTrans.getPositionX(), ballTrans.getPositionY(), ballTrans.getPositionZ()};
         float offsetLimit = 0.005f;
 
-        boxJoint.applyCentralForce(100f, 200f, 100f);
+        boxJoint.applyTorque(100f, 200f, 100f);
         listener.waitForXSteps(90);
         mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
 
-        boxJoint.applyCentralForce(-100f, 200f, -100f);
+        boxJoint.applyTorque(-100f, 200f, -100f);
         listener.waitForXSteps(90);
         mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
 
-        boxJoint.applyTorque(0f, 1000f, 0f);
-        listener.waitForXSteps(180);
-        mWaiter.assertTrue(checkTransformOffset(ballTrans, anchor, offsetLimit));
-
-        boxJoint.applyCentralForce(-1000f, 500f, 500f);
-        listener.waitForXSteps(180);
         mWaiter.assertTrue(!checkTransformOffset(ballTrans, anchor, offsetLimit));
         sxrTestUtils.waitForXFrames(30);
     }
