@@ -90,8 +90,8 @@ public class PhysicsJointTest
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 3);
-        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, 1, 1);
-        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(rootJoint, 2, 1);
+        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint,  SXRPhysicsJoint.SPHERICAL, 1, 1);
+        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.SPHERICAL, 2, 1);
 
         SXRNode box = addCube(0f, 8, -10);
         SXRNode ball1 = addSphere(0f, -3, 0);
@@ -101,6 +101,8 @@ public class PhysicsJointTest
         Vector3f pos1 = new Vector3f();
         Vector3f pos2 = new Vector3f();
 
+        joint1.setPivot(0, 3, 0);
+        joint2.setPivot(0, 3, 0);
         ball2.getRenderData().getMaterial().setDiffuseColor(0, 1, 0, 1);
         scene.addNode(box);
         ball1.addChildObject(ball2);
@@ -142,15 +144,13 @@ public class PhysicsJointTest
     @Test
     public void testTwoHingeJoints()
     {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 5);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
 
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 3);
-        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, 1, 1);
-        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(rootJoint, 2, 1);
-        SXRHingeConstraint hinge1 = new SXRHingeConstraint(sxrTestUtils.getSxrContext(), rootJoint, new float[] { 0, 0, 1 } );
-        SXRHingeConstraint hinge2 = new SXRHingeConstraint(sxrTestUtils.getSxrContext(), rootJoint, new float[] { 1, 0, 0 } );
+        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE,1, 1);
+        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.REVOLUTE,2, 1);
         SXRNode box = addCube(0f, 8, -10);
         SXRNode ball1 = addSphere(0f, -3, 0);
         SXRNode ball2 = addSphere(0f, -3, 0);
@@ -158,6 +158,11 @@ public class PhysicsJointTest
         SXRTransform trans2 = ball2.getTransform();
         Vector3f pos1 = new Vector3f();
         Vector3f pos2 = new Vector3f();
+
+        joint1.setPivot(0, 3, 0);
+        joint1.setAxis(0, 0, 1);
+        joint2.setPivot(0, 3, 0);
+        joint2.setAxis(1, 0, 0);
 
         ball1.setName("ball1");
         ball2.setName("ball2");
@@ -168,8 +173,6 @@ public class PhysicsJointTest
         box.attachComponent(rootJoint);
         ball1.attachComponent(joint1);
         ball2.attachComponent(joint2);
-        ball1.attachComponent(hinge1);
-        ball2.attachComponent(hinge2);
         listener.waitUntilAdded();
         sxrTestUtils.waitForXFrames(10);
 
@@ -206,11 +209,12 @@ public class PhysicsJointTest
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
-        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 10);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
         SXRNode ground = addGround(0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
 
+        firstJoint.setPivot(0, 2, 0);
         ball.getTransform().rotateByAxisWithPivot(-30, 0, 0, 1, 0, 0, 0);
         scene.addNode(ground);
         scene.addNode(box);
@@ -238,13 +242,18 @@ public class PhysicsJointTest
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
-        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 10);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
         SXRPhysicsJointMotor motor = new SXRPhysicsJointMotor(sxrTestUtils.getSxrContext(), Float.MAX_VALUE);
         SXRNode ground = addGround(0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
         AxisAngle4f rot = new AxisAngle4f((float) Math.PI / 4, new Vector3f(0, 0, 1));
         Quaternionf q = new Quaternionf();
+        SXRTransform trans1 = ball.getTransform();
+        Vector3f pos1 = new Vector3f();
+
+        pos1.set(-trans1.getPositionX(), -trans1.getPositionY(), -trans1.getPositionZ());
+        firstJoint.setPivot(pos1.x, pos1.y, pos1.z);
 
         rot.get(q);
         scene.addNode(ground);
@@ -273,25 +282,23 @@ public class PhysicsJointTest
     @Test
     public void testHingeConstraint()
     {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 2);
         mWorld.getEventReceiver().addListener(listener);
 
-        float axisIn[] = { 0, 0, 1 };
         SXRNode ball = addSphere( 0, 8, -10);
         SXRNode box = addCube(0, -8, 0);
         SXRTransform ballTrans = ball.getTransform();
         SXRTransform boxTrans = box.getTransform();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
-        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, 1, 1);
-        SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(), rootJoint, axisIn);
+        SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE, 1, 1);
 
+        firstJoint.setAxis(0, 0, 1);
         boxTrans.rotateByAxisWithPivot(-30, 0, 0, 1, 0, 0, 0);
-        constraint.setLimits(-1f, 1f);
         sxrTestUtils.getMainScene().addNode(ball);
+        firstJoint.setPivot(-boxTrans.getPositionX(), -boxTrans.getPositionY(), -boxTrans.getPositionZ());
         ball.addChildObject(box);
         ball.attachComponent(rootJoint);
         box.attachComponent(firstJoint);
-        box.attachComponent(constraint);
         listener.waitUntilAdded();
         sxrTestUtils.waitForXFrames(10);
 
@@ -339,9 +346,10 @@ public class PhysicsJointTest
         SXRNode box1 = addCube(3, -2.5f, -15);
         SXRNode box2 = addCube(-3, 0, 5);
         SXRPhysicsJoint body1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
-        SXRPhysicsJoint body2 = new SXRPhysicsJoint(body1, 1, 1);
+        SXRPhysicsJoint body2 = new SXRPhysicsJoint(body1, SXRPhysicsJoint.PRISMATIC, 1, 1);
         SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1);
 
+        body2.setPivot(3, 0, -5);
         box1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
         box1.addChildObject(box2);
         sxrTestUtils.getMainScene().addNode(ground);
@@ -387,50 +395,6 @@ public class PhysicsJointTest
         sxrTestUtils.waitForXFrames(30);
     }
 
-    @Test
-    public void testGenericConstraint()
-    {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
-        mWorld.getEventReceiver().addListener(listener);
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
-        SXRPhysicsJoint boxJoint = new SXRPhysicsJoint(rootJoint, 1, 1);
-        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), rootJoint);
-        SXRNode ball = addSphere(0, 5f, -10);
-        SXRNode box = addCube(0, -6, 0);
-        SXRTransform ballTrans = ball.getTransform();
-        SXRTransform boxTrans = box.getTransform();
-
-        ball.addChildObject(box);
-        sxrTestUtils.getMainScene().addNode(ball);
-        ball.attachComponent(rootJoint);
-        box.attachComponent(boxJoint);
-        box.attachComponent(constraint);
-        listener.waitUntilAdded();
-        sxrTestUtils.waitForXFrames(10);
-
-        Vector3f ballPos = new Vector3f(ballTrans.getPositionX(), ballTrans.getPositionY(), ballTrans.getPositionZ());
-        Vector3f boxPos = new Vector3f(boxTrans.getPositionX(), boxTrans.getPositionY(), boxTrans.getPositionZ());
-        float origDist = ballPos.distance(boxPos);
-
-        mWorld.setEnable(true);
-        listener.waitForXSteps(30);
-
-        boxJoint.applyTorque(-500, 0, -500);
-        listener.waitForXSteps(100);
-        boxPos.set(boxTrans.getPositionX(), boxTrans.getPositionY(), boxTrans.getPositionZ());
-        ballPos.set(ballTrans.getPositionX(), ballTrans.getPositionY(), ballTrans.getPositionZ());
-
-       mWaiter.assertTrue(Math.abs(boxPos.x + boxPos.z) < 0.1f);
-
-        boxJoint.applyTorque(500, 0, 500);
-        listener.waitForXSteps(100);
-        boxPos.set(boxTrans.getPositionX(), boxTrans.getPositionY(), boxTrans.getPositionZ());
-        ballPos.set(ballTrans.getPositionX(), ballTrans.getPositionY(), ballTrans.getPositionZ());
-
-        mWaiter.assertTrue(Math.abs(boxPos.x + boxPos.z) < 0.1f);
-
-        sxrTestUtils.waitForXFrames(30);
-    }
 
     private SXRNode addCube(float x, float y, float z)
     {
