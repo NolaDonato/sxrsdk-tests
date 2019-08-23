@@ -90,7 +90,7 @@ public class PhysicsJointTest
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 3);
-        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 1);
+        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint,  SXRPhysicsJoint.SPHERICAL, 1, 1);
         SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.SPHERICAL, 2, 1);
 
         SXRNode box = addCube(0f, 8, -10);
@@ -101,6 +101,8 @@ public class PhysicsJointTest
         Vector3f pos1 = new Vector3f();
         Vector3f pos2 = new Vector3f();
 
+        joint1.setPivot(0, 3, 0);
+        joint2.setPivot(0, 3, 0);
         ball2.getRenderData().getMaterial().setDiffuseColor(0, 1, 0, 1);
         scene.addNode(box);
         ball1.addChildObject(ball2);
@@ -147,8 +149,8 @@ public class PhysicsJointTest
 
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 3);
-        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE, 1, 1);
-        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.REVOLUTE, 2, 1);
+        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE,1, 1);
+        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.REVOLUTE,2, 1);
         SXRNode box = addCube(0f, 8, -10);
         SXRNode ball1 = addSphere(0f, -3, 0);
         SXRNode ball2 = addSphere(0f, -3, 0);
@@ -157,8 +159,11 @@ public class PhysicsJointTest
         Vector3f pos1 = new Vector3f();
         Vector3f pos2 = new Vector3f();
 
+        joint1.setPivot(0, 3, 0);
         joint1.setAxis(0, 0, 1);
+        joint2.setPivot(0, 3, 0);
         joint2.setAxis(1, 0, 0);
+
         ball1.setName("ball1");
         ball2.setName("ball2");
         ball2.getRenderData().getMaterial().setDiffuseColor(0, 1, 0, 1);
@@ -203,12 +208,13 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 1, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
         SXRNode ground = addGround(0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
 
+        firstJoint.setPivot(0, 2, 0);
         ball.getTransform().rotateByAxisWithPivot(-30, 0, 0, 1, 0, 0, 0);
         scene.addNode(ground);
         scene.addNode(box);
@@ -224,8 +230,8 @@ public class PhysicsJointTest
         Vector3f boxPos = getWorldPosition(rootJoint);
         Vector3f ballPos = getWorldPosition(firstJoint);
 
-        mWaiter.assertTrue(boxPos.y > 2);
-        mWaiter.assertTrue(ballPos.y > -6);
+        mWaiter.assertTrue((boxPos.y > -6) && (boxPos.y < 0));
+        mWaiter.assertTrue((ballPos.y > -6) && (ballPos.y < 0));
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -243,6 +249,11 @@ public class PhysicsJointTest
         SXRNode ball = addSphere(0, -2, 0);
         AxisAngle4f rot = new AxisAngle4f((float) Math.PI / 4, new Vector3f(0, 0, 1));
         Quaternionf q = new Quaternionf();
+        SXRTransform trans1 = ball.getTransform();
+        Vector3f pos1 = new Vector3f();
+
+        pos1.set(-trans1.getPositionX(), -trans1.getPositionY(), -trans1.getPositionZ());
+        firstJoint.setPivot(pos1.x, pos1.y, pos1.z);
 
         rot.get(q);
         scene.addNode(ground);
@@ -325,9 +336,11 @@ public class PhysicsJointTest
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE, 1, 1);
 
+        firstJoint.setAxis(0, 0, 1);
         boxTrans.rotateByAxisWithPivot(-30, 0, 0, 1, 0, 0, 0);
         firstJoint.setAxis(0, 0, 1);
         sxrTestUtils.getMainScene().addNode(ball);
+        firstJoint.setPivot(-boxTrans.getPositionX(), -boxTrans.getPositionY(), -boxTrans.getPositionZ());
         ball.addChildObject(box);
         ball.attachComponent(rootJoint);
         box.attachComponent(firstJoint);
@@ -380,6 +393,7 @@ public class PhysicsJointTest
         SXRPhysicsJoint body1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint body2 = new SXRPhysicsJoint(body1, SXRPhysicsJoint.PRISMATIC, 1, 1);
 
+        body2.setPivot(3, 0, -5);
         box1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
         box1.addChildObject(box2);
         sxrTestUtils.getMainScene().addNode(ground);
