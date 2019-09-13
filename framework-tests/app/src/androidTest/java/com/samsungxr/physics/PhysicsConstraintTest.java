@@ -27,6 +27,8 @@ import com.samsungxr.unittestutils.SXRTestableActivity;
 import com.samsungxr.utility.Log;
 
 import org.joml.Matrix4f;
+import org.joml.Quaterniond;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.junit.Before;
 import org.junit.Rule;
@@ -354,41 +356,32 @@ public class PhysicsConstraintTest {
         final Vector3f pivotA = new Vector3f(0, 0f, 0f);
         final Vector3f pivotB = new Vector3f(6f, 0, 0);
         SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), ballBody, pivotA, pivotB);
-        Vector3f anchor = new Vector3f(3, 0, -10);
         Vector3f ballPos = new Vector3f();
         Vector3f boxPos = new Vector3f();
         SXRTransform ballTrans = ball.getTransform();
         SXRTransform boxTrans = box.getTransform();
 
         boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
-        constraint.setAngularLowerLimits((float) -Math.PI / 2, (float) -Math.PI / 2, (float) -Math.PI / 2);
-        constraint.setAngularUpperLimits((float) Math.PI / 2, (float) Math.PI / 2, (float) Math.PI / 2);
-        constraint.setLinearLowerLimits(-3f, 0, -3f);
-        constraint.setLinearUpperLimits(3f, 0, 3f);
         sxrTestUtils.waitForXFrames(10);
         box.attachComponent(constraint);
         listener.waitUntilAdded();
 
         world.setEnable(true);
         listener.waitForXSteps(30);
-
-        boxBody.applyCentralForce(100f, 200f, 100f);
-        listener.waitForXSteps(90);
         Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
         Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
 
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
-        float dx = Math.abs(anchor.x - boxPos.x);
-        float dy = Math.abs(anchor.y - boxPos.y);
-        float dz = Math.abs(anchor.z - boxPos.z);
-//        mWaiter.assertTrue(dx <= 3);
-//        mWaiter.assertTrue(dz <= 3);
-        dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
-        dz = Math.abs(ballPos.z - boxPos.z);
+        float dx = Math.abs(ballPos.x - boxPos.x);
+        float dy = Math.abs(ballPos.y - boxPos.y);
+        float dz = Math.abs(ballPos.z - boxPos.z);
+        float roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        float boxY = boxTrans.getPositionY();
+        float dist = dx * dx + dy * dy + dz * dz;
+        float origDist = dist;
 
-        boxBody.applyCentralForce(-100f, 200f, -100f);
+        boxBody.applyCentralForce(300f, 0, 0);
         listener.waitForXSteps(90);
         ballMtx = ballTrans.getLocalModelMatrix4f();
         boxMtx = boxTrans.getLocalModelMatrix4f();
@@ -397,11 +390,28 @@ public class PhysicsConstraintTest {
         dx = Math.abs(ballPos.x - boxPos.x);
         dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
-//        mWaiter.assertTrue(dx <= 3);
-//        mWaiter.assertTrue(dy <= 10);
-//        mWaiter.assertTrue(dz <= 3);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 0.5f);
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 0.01f);
+        mWaiter.assertTrue(Math.abs(roll) < 3);
 
-        boxBody.applyTorque(0f, 1000f, 0f);
+        boxBody.applyCentralForce(-300f, 0, -300f);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 0.5f);
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 0.01f);
+        mWaiter.assertTrue(Math.abs(roll) < 3);
+
+        boxBody.applyTorque(300f, 300, 0);
         listener.waitForXSteps(180);
         ballMtx = ballTrans.getLocalModelMatrix4f();
         boxMtx = boxTrans.getLocalModelMatrix4f();
@@ -410,11 +420,89 @@ public class PhysicsConstraintTest {
         dx = Math.abs(ballPos.x - boxPos.x);
         dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
-//        mWaiter.assertTrue(dx <= 3);
-//        mWaiter.assertTrue(dy <= 10);
-//        mWaiter.assertTrue(dz <= 3);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 0.5f);
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 0.01f);
+        mWaiter.assertTrue(Math.abs(roll) < 3);
+        sxrTestUtils.waitForXFrames(30);
+    }
 
-        boxBody.applyCentralForce(-1000f, 500f, 500f);
+    @Test
+    public void genericLinearLimitsTest()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        world.getEventReceiver().addListener(listener);
+
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -0.5f, -15f);
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), -3f, 0f, -10f, 1f);
+        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 3f, 0f, -10f, 1f);
+        SXRRigidBody ballBody = (SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType());
+        final Vector3f pivotA = new Vector3f(0, 0f, 0f);
+        final Vector3f pivotB = new Vector3f(6f, 0, 0);
+        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), ballBody, pivotA, pivotB);
+        Vector3f ballPos = new Vector3f();
+        Vector3f boxPos = new Vector3f();
+        SXRTransform ballTrans = ball.getTransform();
+        SXRTransform boxTrans = box.getTransform();
+
+        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
+        constraint.setLinearLowerLimits(-1, 0, 0);
+        constraint.setLinearUpperLimits(1, 0, 0);
+        sxrTestUtils.waitForXFrames(10);
+        box.attachComponent(constraint);
+        listener.waitUntilAdded();
+
+        world.setEnable(true);
+        listener.waitForXSteps(30);
+        Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
+        Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        float dx = Math.abs(ballPos.x - boxPos.x);
+        float dy = Math.abs(ballPos.y - boxPos.y);
+        float dz = Math.abs(ballPos.z - boxPos.z);
+        float roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        float boxY = boxTrans.getPositionY();
+        float dist = dx * dx + dy * dy + dz * dz;
+        float origDist = dist;
+
+        boxBody.applyCentralForce(300f, 0, 0);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+//        mWaiter.assertTrue(Math.abs(dist - origDist) < 0.5f);
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dx) < 7);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
+
+        boxBody.applyCentralForce(0, 0, -300f);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dx) < 6);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
+        constraint.setLinearLowerLimits(0, 0, -1);
+        constraint.setLinearUpperLimits(0, 0, 1);
+
+        ballBody.applyCentralForce(-300f, 0, 0);
         listener.waitForXSteps(180);
         ballMtx = ballTrans.getLocalModelMatrix4f();
         boxMtx = boxTrans.getLocalModelMatrix4f();
@@ -423,9 +511,61 @@ public class PhysicsConstraintTest {
         dx = Math.abs(ballPos.x - boxPos.x);
         dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
-//        mWaiter.assertTrue(dx <= 3);
-//        mWaiter.assertTrue(dy <= 10);
-//        mWaiter.assertTrue(dz <= 3);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dx) < 6);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
+
+        constraint.setLinearLowerLimits(0, 0, -1);
+        constraint.setLinearUpperLimits(0, 0, 1);
+        boxBody.applyCentralForce(300f, 0, 0);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dz) < 7);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
+
+        boxBody.applyCentralForce(0, 0, -300f);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dz) < 6);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
+        constraint.setLinearLowerLimits(0, 0, -1);
+        constraint.setLinearUpperLimits(0, 0, 1);
+
+        ballBody.applyCentralForce(-300f, 0, 0);
+        listener.waitForXSteps(180);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dx = Math.abs(ballPos.x - boxPos.x);
+        dy = Math.abs(ballPos.y - boxPos.y);
+        dz = Math.abs(ballPos.z - boxPos.z);
+        dist = dx * dx + dy * dy + dz * dz;
+        roll = boxTrans.getRotationRoll() % (float) Math.PI;
+        mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
+        mWaiter.assertTrue(Math.abs(dz) < 6);
+        mWaiter.assertTrue(Math.abs(roll) < 4);
         sxrTestUtils.waitForXFrames(30);
     }
 
