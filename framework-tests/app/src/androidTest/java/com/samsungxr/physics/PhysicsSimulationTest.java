@@ -198,6 +198,7 @@ public class PhysicsSimulationTest {
         SXRNode cube = addCube(scene, 0.0f, 0.6f, -5.0f, 0.01f);
         SXRRigidBody body = (SXRRigidBody) cube.getComponent(SXRRigidBody.getComponentType());
         listener.waitUntilAdded();
+        sxrTestUtils.waitForXFrames(10);
         world.setEnable(true);
 
         distance = cube.getTransform().getPositionZ();
