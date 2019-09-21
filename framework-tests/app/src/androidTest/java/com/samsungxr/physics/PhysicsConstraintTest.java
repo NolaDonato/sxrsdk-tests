@@ -210,17 +210,26 @@ public class PhysicsConstraintTest {
         world.getEventReceiver().addListener(listener);
 
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
+
         SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 0.75f, -15.0f, 1.0f);
         SXRRigidBody body1 = ((SXRRigidBody) box1.getComponent(SXRRigidBody.getComponentType()));
-        SXRTransform trans1 = box1.getTransform();
+        body1.setSimulationType(SXRRigidBody.DYNAMIC);
+
         SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2.0f, 0.75f, -15.0f, 1.0f);
         SXRRigidBody body2 = ((SXRRigidBody) box2.getComponent(SXRRigidBody.getComponentType()));
-        SXRTransform trans2 = box2.getTransform();
-        Vector3f    slideDir = getDirection(trans1, trans2);
-        float       origDist = slideDir.length();
-        SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1);
+        body2.setSimulationType(SXRRigidBody.DYNAMIC);
 
-        slideDir.normalize();
+        SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1,
+                                                                 new Vector3f(0, 0, 0),
+                                                                 new Vector3f(-5, 0, 0));
+        SXRTransform trans1 = box1.getTransform();
+        SXRTransform trans2 = box2.getTransform();
+        Vector3f pos2 = new Vector3f(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
+        Vector3f sliderAxis = new Vector3f(pos2.x - trans1.getPositionX(),
+                                           pos2.y - trans1.getPositionY(),
+                                           pos2.z - trans1.getPositionZ());
+
+        sliderAxis.normalize();
         sxrTestUtils.waitForXFrames(10);
         body2.setSimulationType(SXRRigidBody.DYNAMIC);
         body1.setSimulationType(SXRRigidBody.DYNAMIC);
@@ -231,31 +240,48 @@ public class PhysicsConstraintTest {
         listener.waitForXSteps(10);
 
         body2.applyCentralForce(100f, 0f, 0f);
-        listener.waitForXSteps(100);
-        Vector3f dir = getDirection(trans1, trans2);
-        float d = dir.length();
-        mWaiter.assertTrue(Math.abs(d - (origDist / 2.0f)) <= 0.4f);
+        listener.waitForXSteps(180);
+        Vector3f p = new Vector3f(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
+        Vector3f dir = new Vector3f(p.x - trans1.getPositionX(),
+                                    p.y - trans1.getPositionY(),
+                                    p.z - trans1.getPositionZ());
         dir.normalize();
-        d = Math.abs(dir.dot(slideDir));
-        mWaiter.assertTrue((1.0f - d) < 0.01f);
+        float dot = dir.dot(sliderAxis);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.01f);
 
         body2.applyCentralForce(-100f, 0f, 0f);
-        listener.waitForXSteps(100);
-        dir = getDirection(trans1, trans2);
-        d = dir.length();
-        mWaiter.assertTrue(Math.abs(d - origDist) < 0.3f);
-
-        body1.applyTorque(-50, 0, 0);
-        listener.waitForXSteps(100);
-        AxisAngle4f aa = getRotation(trans2, trans1);
-        mWaiter.assertTrue(Math.abs(aa.angle) < 0.001f);
-
-        body1.applyCentralForce(-100f, 0f, -100f);
-        listener.waitForXSteps(100);
-        dir = getDirection(trans1, trans2);
+        listener.waitForXSteps(180);
+        p.set(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
+        dir = new Vector3f(p.x - trans1.getPositionX(),
+                           p.y - trans1.getPositionY(),
+                           p.z - trans1.getPositionZ());
         dir.normalize();
-        d = Math.abs(dir.dot(slideDir));
-        mWaiter.assertTrue((1.0f - d) < 0.01f);
+        p.sub(pos2);
+        dot = dir.dot(sliderAxis);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.01f);
+        mWaiter.assertTrue(p.x < 0.3f);
+        mWaiter.assertTrue(p.y < 0.01f);
+        mWaiter.assertTrue(p.z < 0.01f);
+
+        body1.applyCentralForce(100f, 0f, -100f);
+        listener.waitForXSteps(100);
+        p.set(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
+        dir = new Vector3f(p.x - trans1.getPositionX(),
+                           p.y - trans1.getPositionY(),
+                           p.z - trans1.getPositionZ());
+        dir.normalize();
+        dot = dir.dot(sliderAxis);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.5f);
+
+        body2.applyTorque(0, 100f, 0f);
+        listener.waitForXSteps(100);
+        p.set(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
+        dir = new Vector3f(p.x - trans1.getPositionX(),
+                           p.y - trans1.getPositionY(),
+                           p.z - trans1.getPositionZ());
+        dir.normalize();
+        dot = dir.dot(sliderAxis);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.5f);
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -265,11 +291,12 @@ public class PhysicsConstraintTest {
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
         world.getEventReceiver().addListener(listener);
 
-        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
-        SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 0.75f, -15.0f, 1.0f);
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -10);
+
+        SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 2, 0.75f, -15, 1);
         SXRRigidBody body1 = ((SXRRigidBody) box1.getComponent(SXRRigidBody.getComponentType()));
         SXRTransform trans1 = box1.getTransform();
-        SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2.0f, 0.75f, -10.0f, 1.0f);
+        SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2, 0.75f, -10, 1);
         SXRRigidBody body2 = ((SXRRigidBody) box2.getComponent(SXRRigidBody.getComponentType()));
         SXRTransform trans2 = box2.getTransform();
         Vector3f    slideDir = getDirection(trans1, trans2);
