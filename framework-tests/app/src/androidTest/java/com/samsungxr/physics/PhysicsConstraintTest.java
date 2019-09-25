@@ -20,6 +20,7 @@ import com.samsungxr.physics.SXRHingeConstraint;
 import com.samsungxr.physics.SXRPoint2PointConstraint;
 import com.samsungxr.physics.SXRRigidBody;
 import com.samsungxr.physics.SXRSliderConstraint;
+import com.samsungxr.physics.SXRUniversalConstraint;
 import com.samsungxr.physics.SXRWorld;
 import com.samsungxr.nodes.SXRCubeNode;
 import com.samsungxr.unittestutils.SXRTestUtils;
@@ -618,6 +619,222 @@ public class PhysicsConstraintTest {
         sxrTestUtils.waitForXFrames(30);
     }
 
+    @Test
+    public void genericAngularLimitsTest()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        world.getEventReceiver().addListener(listener);
+
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -0.5f, -15f);
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), -3f, 0f, -10f, 1f);
+        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 3f, 0f, -10f, 1f);
+        SXRRigidBody ballBody = (SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType());
+        final Vector3f pivotA = new Vector3f(0, 0f, 0f);
+        final Vector3f pivotB = new Vector3f(6f, 0, 0);
+        SXRGenericConstraint constraint = new SXRGenericConstraint(sxrTestUtils.getSxrContext(), ballBody, pivotA, pivotB);
+        Vector3f ballPos = new Vector3f();
+        Vector3f boxPos = new Vector3f();
+        SXRTransform ballTrans = ball.getTransform();
+        SXRTransform boxTrans = box.getTransform();
+        float deg45 = (float) Math.PI / 4;
+
+        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
+        constraint.setAngularLowerLimits(0, -deg45, 0);
+        constraint.setAngularUpperLimits(0, deg45, 0);
+        sxrTestUtils.waitForXFrames(10);
+        box.attachComponent(constraint);
+        listener.waitUntilAdded();
+
+        world.setEnable(true);
+        listener.waitForXSteps(30);
+        Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
+        Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        Matrix4f frameB = new Matrix4f();
+        Vector3f rotB = new Vector3f();
+        float dist = ballPos.distance(boxPos);
+        float origDist = dist;
+
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        boxBody.applyCentralForce(300f, 0, 0);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(rotB.y) <= (deg45 + 0.1f));
+
+        boxBody.applyCentralForce(0, 0, -300f);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(rotB.y) <= (deg45 + 0.01f));
+
+        ballBody.applyCentralForce(-300f, 0, 0);
+        listener.waitForXSteps(180);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(rotB.y) <= (deg45 + 0.1f));
+
+        constraint.setAngularLowerLimits(0, -deg45, 0);
+        constraint.setAngularUpperLimits(0, deg45, 0);
+        boxBody.applyCentralForce(300f, 0, 0);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(rotB.y) <= (deg45 + 0.1f));
+
+        boxBody.applyCentralForce(0, 0, -300f);
+        listener.waitForXSteps(90);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+
+        ballBody.applyCentralForce(-300f, 0, 0);
+        listener.waitForXSteps(180);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 1);
+        mWaiter.assertTrue(Math.abs(rotB.y) <= (deg45 + 0.1f));
+        sxrTestUtils.waitForXFrames(30);
+    }
+
+    @Test
+    public void universalConstraintTest()
+    {
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 5);
+        world.getEventReceiver().addListener(listener);
+        SXRNode root = addCube(sxrTestUtils.getMainScene(), 0, 10, -10f, 0);
+        SXRRigidBody rootBody = (SXRRigidBody) root.getComponent(SXRRigidBody.getComponentType());
+        SXRNode box = addCube(sxrTestUtils.getMainScene(), 0, 10, -10f, 1);
+        SXRRigidBody boxBody = (SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType());
+        SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 0, 5, -10f, 1f);
+        SXRRigidBody ballBody = (SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType());
+        SXRFixedConstraint fixed = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), rootBody);
+        SXRUniversalConstraint constraint = new SXRUniversalConstraint(sxrTestUtils.getSxrContext(),
+                                                                       boxBody,
+                                                                       new Vector3f(0, 10, -10),
+                                                                       new Vector3f(0, 0, 1),
+                                                                       new Vector3f(1, 0, 0));
+        Vector3f ballPos = new Vector3f();
+        Vector3f boxPos = new Vector3f();
+        SXRTransform ballTrans = ball.getTransform();
+        SXRTransform boxTrans = box.getTransform();
+        float deg45 = (float) Math.PI / 4;
+
+        sxrTestUtils.waitForXFrames(10);
+        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
+        rootBody.setIgnoreCollisionCheck(boxBody, true);
+        boxBody.setIgnoreCollisionCheck(rootBody, true);
+        box.attachComponent(fixed);
+        ball.attachComponent(constraint);
+        listener.waitUntilAdded();
+
+        world.setEnable(true);
+        listener.waitForXSteps(200);
+        Matrix4f ballMtx = ballTrans.getLocalModelMatrix4f();
+        Matrix4f boxMtx = boxTrans.getLocalModelMatrix4f();
+
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        Matrix4f frameB = new Matrix4f();
+        Vector3f rotB = new Vector3f();
+        float dist = ballPos.distance(boxPos);
+        float origDist = dist;
+
+        ballBody.applyCentralForce(300, 0, 0);
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        boxMtx.invert().mul(ballMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 3);
+        mWaiter.assertTrue(Math.abs(frameB.m30()) < 2.0);
+        mWaiter.assertTrue(Math.abs(frameB.m32()) < 1.0);
+
+        ballBody.applyCentralForce(0, 0, 300);
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        boxMtx.invert().mul(ballMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 3);
+        mWaiter.assertTrue(Math.abs(frameB.m30()) < 2.0);
+        mWaiter.assertTrue(Math.abs(frameB.m32()) < 1.0);
+
+        ballBody.applyTorque(100, 0, 0);
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.getTranslation(ballPos);
+        boxMtx.getTranslation(boxPos);
+        boxMtx.invert().mul(ballMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        dist = ballPos.distance(boxPos);
+        mWaiter.assertTrue(Math.abs(dist - origDist) < 3);
+        mWaiter.assertTrue(Math.abs(frameB.m30()) < 2.0);
+        mWaiter.assertTrue(Math.abs(frameB.m32()) < 1.0);
+
+        constraint.setAngularLowerLimits(0,  -deg45, 0);
+        constraint.setAngularUpperLimits(0,  deg45, 0);
+        boxBody.applyCentralForce(150, 0, -150f);
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        mWaiter.assertTrue(Math.abs(rotB.x) <= (deg45 + 0.1f));
+
+        ballBody.applyCentralForce(-150f, 0, 150f);
+        listener.waitForXSteps(100);
+        ballMtx = ballTrans.getLocalModelMatrix4f();
+        boxMtx = boxTrans.getLocalModelMatrix4f();
+        ballMtx.invert().mul(boxMtx, frameB);
+        frameB.getEulerAnglesZYX(rotB);
+        mWaiter.assertTrue(Math.abs(rotB.x) <= (deg45 + 0.1f));
+
+        sxrTestUtils.waitForXFrames(30);
+    }
     /*
     * Function to add a sphere of dimension and position specified in the
     * Bullet physics world and scene graph
