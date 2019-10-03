@@ -45,10 +45,16 @@ dependencies {
         } else {
             implementation(name: 'widgetLib-debug', ext: 'aar')
         }
+        if (findProject(':sxr-physics')) {
+            implementation project(':sxr-physics')
+        } else {
+            implementation(name: 'sxr-physics-debug', ext: 'aar')
+        }
     }
     else
     {
         implementation "com.samsungxr.widgetlib:widgetLib:$sxrVersion"
+        implementation "com.samsungxr.physics:sxr-physics:$sxrVersion"
     }
     androidTestImplementation 'com.android.support:support-annotations:23.+'
     androidTestImplementation 'com.android.support.test:runner:0.4.1'

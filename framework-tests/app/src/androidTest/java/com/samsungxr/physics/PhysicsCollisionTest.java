@@ -1,4 +1,4 @@
-package com.samsungxr.tester;
+package com.samsungxr.physics;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -45,21 +45,14 @@ public class PhysicsCollisionTest {
     public void setUp() throws TimeoutException {
         mWaiter = new Waiter();
         mCollisionMatrix = new SXRCollisionMatrix();
-
-        SXRTestUtils.OnInitCallback initCallback = new SXRTestUtils.OnInitCallback() {
-            @Override
-            public void onInit(SXRContext sxrContext) {
-                SXRWorld world = new SXRWorld(sxrContext, mCollisionMatrix);
-                sxrContext.getMainScene().getRoot().attachComponent(world);
-            }
-        };
-
-        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity(), initCallback);
+        sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
+        SXRWorld world = new SXRWorld(sxrTestUtils.getMainScene(), mCollisionMatrix);
+        world.setEnable(true);
     }
 
     @Test
-    public void testCollisionMask() throws Exception {
+    public void testCollisionMask() {
 
         for (int groupA = 0; groupA < 16; groupA++) {
             for (int groupB = 0; groupB < 16; groupB++) {
@@ -91,11 +84,10 @@ public class PhysicsCollisionTest {
     }
 
     @Test
-    public void testCollisionEvent() throws Exception  {
+    public void testCollisionEvent() {
 
         SXRContext context = sxrTestUtils.getSxrContext();
         SXRScene scene = sxrTestUtils.getMainScene();
-
         SXRSphereNode sphereA = new SXRSphereNode(context);
         SXRSphereNode sphereB = new SXRSphereNode(context);
         SXRSphereCollider colliderA = new SXRSphereCollider(context);
@@ -103,6 +95,8 @@ public class PhysicsCollisionTest {
         SXRRigidBody bodyA = new SXRRigidBody(context, 3.0f, 0);
         SXRRigidBody bodyB = new SXRRigidBody(context, 0.0f, 1);
 
+        scene.addNode(sphereA);
+        scene.addNode(sphereB);
         mCollisionMatrix.enableCollision(0, 1);
 
         CollisionHandler collisionHandler = new CollisionHandler();
@@ -127,8 +121,6 @@ public class PhysicsCollisionTest {
         sphereA.attachComponent(bodyA);
         sphereB.attachComponent(bodyB);
 
-        scene.addNode(sphereA);
-        scene.addNode(sphereB);
 
         mWaiter.assertTrue(collisionHandler.waitForCollision(5 * 60 * 1000));
     }

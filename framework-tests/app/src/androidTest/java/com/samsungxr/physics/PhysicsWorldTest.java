@@ -1,4 +1,4 @@
-package com.samsungxr.tester;
+package com.samsungxr.physics;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -44,8 +44,8 @@ public class PhysicsWorldTest {
         SXRTestUtils.OnInitCallback initCallback = new SXRTestUtils.OnInitCallback() {
             @Override
             public void onInit(SXRContext sxrContext) {
-                mWorld = new SXRWorld(sxrContext);
-                sxrContext.getMainScene().getRoot().attachComponent(mWorld);
+                mWorld = new SXRWorld(sxrTestUtils.getMainScene());
+                mWorld.setEnable(true);
             }
         };
 
