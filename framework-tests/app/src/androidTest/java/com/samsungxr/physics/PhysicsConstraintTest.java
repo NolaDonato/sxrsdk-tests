@@ -95,14 +95,14 @@ public class PhysicsConstraintTest {
         AxisAngle4f rotDir = getRotation(trans1, trans2);
         float d = transformsDistance(trans1, trans2);
         mWaiter.assertTrue(Math.abs(rotDir.angle) < 0.001f);
-        mWaiter.assertTrue(Math.abs(distance - d) < 0.001f);
+        mWaiter.assertTrue(Math.abs(distance - d) < 0.01f);
 
         body2.applyCentralForce(300,0,300);
         listener.waitForXSteps(30);
         rotDir = getRotation(trans1, trans2);
         mWaiter.assertTrue(Math.abs(rotDir.angle) < 0.001f);
         d = transformsDistance(trans1, trans2);
-        mWaiter.assertTrue(Math.abs(distance - d) < 0.001f);
+        mWaiter.assertTrue(Math.abs(distance - d) < 0.01f);
         sxrTestUtils.waitForXFrames(30);
     }
 

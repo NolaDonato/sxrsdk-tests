@@ -230,8 +230,8 @@ public class PhysicsJointTest
         Vector3f boxPos = getWorldPosition(rootJoint);
         Vector3f ballPos = getWorldPosition(firstJoint);
 
-        mWaiter.assertTrue((boxPos.y > -6) && (boxPos.y < 0));
-        mWaiter.assertTrue((ballPos.y > -6) && (ballPos.y < 0));
+        mWaiter.assertTrue((boxPos.y > -1) && (boxPos.y < 1));
+        mWaiter.assertTrue((ballPos.y > -3) && (ballPos.y <= 0));
         sxrTestUtils.waitForXFrames(30);
     }
 
