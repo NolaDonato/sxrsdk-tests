@@ -93,7 +93,7 @@ public class PhysicsJointTest
         SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint,  SXRPhysicsJoint.SPHERICAL, 1, 1);
         SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.SPHERICAL, 2, 1);
 
-        SXRNode box = addCube(0f, 8, -10);
+        SXRNode box = addCube(0f, 8, -15);
         SXRNode ball1 = addSphere(0f, -3, 0);
         SXRNode ball2 = addSphere(0f, -3, 0);
         SXRTransform trans1 = ball1.getTransform();
@@ -149,8 +149,8 @@ public class PhysicsJointTest
 
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 3);
-        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE,1, 1);
-        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.REVOLUTE,2, 1);
+        SXRPhysicsJoint joint1 = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE,1, 5);
+        SXRPhysicsJoint joint2 = new SXRPhysicsJoint(joint1, SXRPhysicsJoint.REVOLUTE,2, 5);
         SXRNode box = addCube(0f, 8, -10);
         SXRNode ball1 = addSphere(0f, -3, 0);
         SXRNode ball2 = addSphere(0f, -3, 0);
@@ -170,15 +170,16 @@ public class PhysicsJointTest
         scene.addNode(box);
         ball1.addChildObject(ball2);
         box.addChildObject(ball1);
+        sxrTestUtils.waitForXFrames(10);
+
         box.attachComponent(rootJoint);
         ball1.attachComponent(joint1);
         ball2.attachComponent(joint2);
         listener.waitUntilAdded();
-        sxrTestUtils.waitForXFrames(10);
 
         mWorld.setEnable(true);
-        listener.waitForXSteps(100);
-        joint2.applyTorque(100);
+        listener.waitForXSteps(30);
+        joint2.applyTorque(500);
         listener.waitForXSteps(100);
         pos1.set(trans1.getPositionX(), trans1.getPositionY(), trans1.getPositionZ());
         pos2.set(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
@@ -190,7 +191,7 @@ public class PhysicsJointTest
         mWaiter.assertTrue(Math.abs(pos1.x) < 0.001);
         mWaiter.assertTrue(Math.abs(pos2.x) < 0.001);
 
-        joint1.applyTorque(100);
+        joint1.applyTorque(500);
         listener.waitForXSteps(100);
         pos1.set(trans1.getPositionX(), trans1.getPositionY(), trans1.getPositionZ());
         pos2.set(trans2.getPositionX(), trans2.getPositionY(), trans2.getPositionZ());
@@ -208,7 +209,7 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 1, 2);
+        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
         SXRNode ground = addGround(0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
@@ -259,12 +260,13 @@ public class PhysicsJointTest
         scene.addNode(ground);
         scene.addNode(box);
         box.addChildObject(ball);
+        sxrTestUtils.waitForXFrames(10);
+
         box.attachComponent(rootJoint);
         ball.attachComponent(firstJoint);
         ball.attachComponent(motor);
 
         listener.waitUntilAdded();
-        sxrTestUtils.waitForXFrames(10);
         mWorld.setEnable(true);
         listener.waitForXSteps(10);
 
