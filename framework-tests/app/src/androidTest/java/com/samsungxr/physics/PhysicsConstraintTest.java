@@ -80,8 +80,6 @@ public class PhysicsConstraintTest {
         SXRTransform trans2 = box2.getTransform();
         SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), body2);
 
-        body1.setSimulationType(SXRRigidBody.DYNAMIC);
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
         box1.attachComponent(constraint);
         sxrTestUtils.waitForXFrames(10);
 
@@ -120,7 +118,6 @@ public class PhysicsConstraintTest {
         SXRRigidBody ballBody = ((SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType()));
         SXRPoint2PointConstraint constraint = new SXRPoint2PointConstraint(sxrTestUtils.getSxrContext(), ballBody, pivotInA, pivotInB);
 
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         box.attachComponent(constraint);
         listener.waitUntilAdded();
         world.setEnable(true);
@@ -154,11 +151,9 @@ public class PhysicsConstraintTest {
         SXRTransform boxTrans = box.getTransform();
         SXRRigidBody boxBody = (SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType());
         SXRRigidBody ballBody = ((SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType()));
-
         SXRHingeConstraint constraint = new SXRHingeConstraint(sxrTestUtils.getSxrContext(),
                 ballBody, pivotInA, pivotInB, axisIn);
 
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         constraint.setLimits(-1f, 1f);
         box.attachComponent(constraint);
         listener.waitUntilAdded();
@@ -211,15 +206,10 @@ public class PhysicsConstraintTest {
         world.getEventReceiver().addListener(listener);
 
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
-
         SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 0.75f, -15.0f, 1.0f);
         SXRRigidBody body1 = ((SXRRigidBody) box1.getComponent(SXRRigidBody.getComponentType()));
-        body1.setSimulationType(SXRRigidBody.DYNAMIC);
-
         SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2.0f, 0.75f, -15.0f, 1.0f);
         SXRRigidBody body2 = ((SXRRigidBody) box2.getComponent(SXRRigidBody.getComponentType()));
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
-
         SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1,
                                                                  new Vector3f(0, 0, 0),
                                                                  new Vector3f(-5, 0, 0));
@@ -232,8 +222,6 @@ public class PhysicsConstraintTest {
 
         sliderAxis.normalize();
         sxrTestUtils.waitForXFrames(10);
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
-        body1.setSimulationType(SXRRigidBody.DYNAMIC);
         box2.attachComponent(constraint);
 
         listener.waitUntilAdded();
@@ -311,8 +299,6 @@ public class PhysicsConstraintTest {
         constraint.setLinearUpperLimit(linearLimit);
         slideDir.normalize();
         sxrTestUtils.waitForXFrames(10);
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
-        body1.setSimulationType(SXRRigidBody.DYNAMIC);
         box2.attachComponent(constraint);
 
         listener.waitUntilAdded();
@@ -375,6 +361,7 @@ public class PhysicsConstraintTest {
         SXRConeTwistConstraint constraint = new SXRConeTwistConstraint(sxrTestUtils.getSxrContext(),
                 boxBody, pivotA, pivotB, coneAxis);
 
+        boxBody.setSimulationType(SXRRigidBody.KINEMATIC);
         sxrTestUtils.waitForXFrames(10);
         ball.attachComponent(constraint);
         listener.waitUntilAdded();
@@ -411,7 +398,6 @@ public class PhysicsConstraintTest {
         SXRTransform ballTrans = ball.getTransform();
         SXRTransform boxTrans = box.getTransform();
 
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         sxrTestUtils.waitForXFrames(10);
         box.attachComponent(constraint);
         listener.waitUntilAdded();
@@ -497,7 +483,6 @@ public class PhysicsConstraintTest {
         SXRTransform ballTrans = ball.getTransform();
         SXRTransform boxTrans = box.getTransform();
 
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         constraint.setLinearLowerLimits(-1, 0, 0);
         constraint.setLinearUpperLimits(1, 0, 0);
         sxrTestUtils.waitForXFrames(10);
@@ -639,7 +624,6 @@ public class PhysicsConstraintTest {
         SXRTransform boxTrans = box.getTransform();
         float deg45 = (float) Math.PI / 4;
 
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         constraint.setAngularLowerLimits(0, -deg45, 0);
         constraint.setAngularUpperLimits(0, deg45, 0);
         sxrTestUtils.waitForXFrames(10);
@@ -757,7 +741,6 @@ public class PhysicsConstraintTest {
         float deg45 = (float) Math.PI / 4;
 
         sxrTestUtils.waitForXFrames(10);
-        boxBody.setSimulationType(SXRRigidBody.DYNAMIC);
         rootBody.setIgnoreCollisionCheck(boxBody, true);
         boxBody.setIgnoreCollisionCheck(rootBody, true);
         box.attachComponent(fixed);
@@ -899,7 +882,7 @@ public class PhysicsConstraintTest {
 
         // Physics body
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
-        body.setSimulationType(SXRRigidBody.KINEMATIC);
+        body.setSimulationType(SXRRigidBody.DYNAMIC);
         cubeObject.attachComponent(body);
         return cubeObject;
     }

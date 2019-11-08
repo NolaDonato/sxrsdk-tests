@@ -71,7 +71,6 @@ public class PhysicsJointConstraintTest
         SXRTransform trans2 = box2.getTransform();
         SXRFixedConstraint constraint = new SXRFixedConstraint(sxrTestUtils.getSxrContext(), body2);
 
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
         box1.attachComponent(constraint);
         sxrTestUtils.waitForXFrames(10);
 
@@ -202,7 +201,6 @@ public class PhysicsJointConstraintTest
 
         sliderAxis.normalize();
         sxrTestUtils.waitForXFrames(10);
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
         box2.attachComponent(constraint);
         listener.waitUntilAdded();
         world.setEnable(true);
@@ -237,7 +235,7 @@ public class PhysicsJointConstraintTest
                            p.z - trans1.getPositionZ());
         dir.normalize();
         dot = dir.dot(sliderAxis);
-        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.03f);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.06f);
 
         body2.applyTorque(0, 100f, 0f);
         listener.waitForXSteps(60);
@@ -247,7 +245,7 @@ public class PhysicsJointConstraintTest
                            p.z - trans1.getPositionZ());
         dir.normalize();
         dot = dir.dot(sliderAxis);
-        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.03f);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.06f);
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -308,7 +306,7 @@ public class PhysicsJointConstraintTest
                            p.z - trans1.getPositionZ());
         dir.normalize();
         dot = dir.dot(sliderAxis);
-        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.03f);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.06f);
 
         joint2.applyTorque(0, 100f, 0f);
         listener.waitForXSteps(60);
@@ -318,7 +316,7 @@ public class PhysicsJointConstraintTest
                            p.z - trans1.getPositionZ());
         dir.normalize();
         dot = dir.dot(sliderAxis);
-        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.03f);
+        mWaiter.assertTrue((1 - Math.abs(dot)) < 0.06f);
         sxrTestUtils.waitForXFrames(30);
     }
 
@@ -347,8 +345,6 @@ public class PhysicsJointConstraintTest
         constraint.setLinearUpperLimit(linearLimit);
         slideDir.normalize();
         sxrTestUtils.waitForXFrames(10);
-        body2.setSimulationType(SXRRigidBody.DYNAMIC);
-        body1.setSimulationType(SXRRigidBody.DYNAMIC);
         box2.attachComponent(constraint);
 
         listener.waitUntilAdded();
@@ -454,7 +450,7 @@ public class PhysicsJointConstraintTest
 
         // Physics body
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
-        body.setSimulationType(SXRRigidBody.KINEMATIC);
+        body.setSimulationType(SXRRigidBody.DYNAMIC);
         cubeObject.attachComponent(body);
         return cubeObject;
     }
@@ -530,8 +526,6 @@ public class PhysicsJointConstraintTest
 
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
         groundObject.attachComponent(body);
-
-
         return groundObject;
     }
 
