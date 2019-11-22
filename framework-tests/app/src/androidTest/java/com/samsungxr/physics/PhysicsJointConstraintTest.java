@@ -525,6 +525,7 @@ public class PhysicsJointConstraintTest
         groundObject.attachCollider(boxCollider);
 
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
+        body.setScale(100, 0.5f, 100);
         groundObject.attachComponent(body);
         return groundObject;
     }

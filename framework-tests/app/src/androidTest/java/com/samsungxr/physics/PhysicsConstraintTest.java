@@ -62,6 +62,11 @@ public class PhysicsConstraintTest {
         SXRContext ctx = sxrTestUtils.getSxrContext();
         ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
         world = new SXRWorld(sxrTestUtils.getMainScene());
+        // Include the following 3 lines for Bullet debug draw
+        SXRNode debugDraw = world.setupDebugDraw();
+        sxrTestUtils.getMainScene().addNode(debugDraw);
+        world.setDebugMode(-1);
+
         sxrTestUtils.waitForXFrames(5);
     }
 
@@ -206,9 +211,9 @@ public class PhysicsConstraintTest {
         world.getEventReceiver().addListener(listener);
 
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, 0f, -15f);
-        SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 0.75f, -15.0f, 1.0f);
+        SXRNode box1 = addCube(sxrTestUtils.getMainScene(), 3.0f, 2, -15.0f, 1.0f);
         SXRRigidBody body1 = ((SXRRigidBody) box1.getComponent(SXRRigidBody.getComponentType()));
-        SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2.0f, 0.75f, -15.0f, 1.0f);
+        SXRNode box2 = addCube(sxrTestUtils.getMainScene(), -2.0f, 2, -15.0f, 1.0f);
         SXRRigidBody body2 = ((SXRRigidBody) box2.getComponent(SXRRigidBody.getComponentType()));
         SXRSliderConstraint constraint = new SXRSliderConstraint(sxrTestUtils.getSxrContext(), body1,
                                                                  new Vector3f(0, 0, 0),
@@ -882,7 +887,6 @@ public class PhysicsConstraintTest {
 
         // Physics body
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), mass);
-        body.setSimulationType(SXRRigidBody.DYNAMIC);
         cubeObject.attachComponent(body);
         return cubeObject;
     }
@@ -901,6 +905,7 @@ public class PhysicsConstraintTest {
         groundObject.attachCollider(boxCollider);
 
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
+        body.setScale(100, 0.5f, 100);
         groundObject.attachComponent(body);
 
 

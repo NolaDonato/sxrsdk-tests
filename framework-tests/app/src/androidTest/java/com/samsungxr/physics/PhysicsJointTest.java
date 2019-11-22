@@ -476,15 +476,17 @@ public class PhysicsJointTest
         SXRContext ctx = sxrTestUtils.getSxrContext();
         SXRMaterial mtl = new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID);
         SXRNode ground = new SXRCubeNode(ctx, true, mtl, new Vector3f(100, 10, 100));
-        SXRMeshCollider collider = new SXRMeshCollider(ctx, true);
+        SXRBoxCollider collider = new SXRBoxCollider(ctx);
         SXRRigidBody body = new SXRRigidBody(ctx, 0.0f);
 
         mtl.setMainTexture(mFloorTex);
         ground.getTransform().setPosition(x, y, z);
         ground.setName("ground");
+        collider.setHalfExtents(0.5f, 0.5f, 0.5f);
         ground.attachCollider(collider);
         body.setRestitution(0.5f);
         body.setFriction(1.0f);
+        body.setScale(100, 10, 100);
         ground.attachComponent(body);
         return ground;
     }
