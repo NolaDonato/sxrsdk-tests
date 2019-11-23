@@ -6,6 +6,7 @@ import android.support.test.runner.AndroidJUnit4;
 import net.jodah.concurrentunit.Waiter;
 
 import com.samsungxr.SXRContext;
+import com.samsungxr.SXRNode;
 import com.samsungxr.SXRScene;
 import com.samsungxr.SXRSphereCollider;
 import com.samsungxr.physics.SXRCollisionMatrix;
@@ -31,7 +32,8 @@ import java.util.concurrent.TimeoutException;
 public class PhysicsWorldTest {
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
-    SXRWorld mWorld;
+    private SXRWorld mWorld;
+    private boolean mEnableDebug = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -45,6 +47,12 @@ public class PhysicsWorldTest {
             @Override
             public void onInit(SXRContext sxrContext) {
                 mWorld = new SXRWorld(sxrTestUtils.getMainScene());
+                if (mEnableDebug)
+                {
+                    SXRNode debugDraw = mWorld.setupDebugDraw();
+                    sxrTestUtils.getMainScene().addNode(debugDraw);
+                    mWorld.setDebugMode(-1);
+                }
                 mWorld.setEnable(true);
             }
         };

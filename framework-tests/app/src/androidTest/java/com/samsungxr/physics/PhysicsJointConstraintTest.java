@@ -33,13 +33,12 @@ public class PhysicsJointConstraintTest
 {
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
-    SXRWorld world;
-
+    private SXRWorld world;
     private SXRMesh cubeMesh = null;
     private SXRTexture cubeTexture = null;
-
     private SXRMesh sphereMesh = null;
     private SXRTexture sphereTexture = null;
+    private boolean mEnableDebug = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -53,6 +52,12 @@ public class PhysicsJointConstraintTest
         SXRContext ctx = sxrTestUtils.getSxrContext();
         ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
         world = new SXRWorld(sxrTestUtils.getMainScene(), true);
+        if (mEnableDebug)
+        {
+            SXRNode debugDraw = world.setupDebugDraw();
+            sxrTestUtils.getMainScene().addNode(debugDraw);
+            world.setDebugMode(-1);
+        }
         sxrTestUtils.waitForXFrames(5);
     }
 
@@ -475,39 +480,6 @@ public class PhysicsJointConstraintTest
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), mass, 1);
 
         rootCube.attachComponent(rootJoint);
-        return rootJoint;
-    }
-
-    private SXRPhysicsJoint addJoints(SXRScene scene, float x, float y, float z, float mass)
-    {
-        SXRMaterial mtl1 = new SXRMaterial(sxrTestUtils.getSxrContext(), SXRMaterial.SXRShaderType.Phong.ID);
-        SXRMaterial mtl2 = new SXRMaterial(sxrTestUtils.getSxrContext(), SXRMaterial.SXRShaderType.Phong.ID);
-        SXRNode rootCube = new SXRCubeNode(sxrTestUtils.getSxrContext(), true, mtl1);
-        SXRNode childCube = new SXRCubeNode(sxrTestUtils.getSxrContext(), true, mtl2);
-
-        rootCube.getTransform().setPosition(x, y, z);
-        rootCube.setName("joint0");
-        childCube.getTransform().setPosition(0, -2, 0);
-        mtl1.setDiffuseColor(1, 0.5f, 1, 1);
-        mtl2.setDiffuseColor(0.5f, 1, 1,1);
-        rootCube.addChildObject(childCube);
-        scene.addNode(rootCube);
-
-        // Colliders
-        SXRBoxCollider collider0 = new SXRBoxCollider(sxrTestUtils.getSxrContext());
-        SXRBoxCollider collider1 = new SXRBoxCollider(sxrTestUtils.getSxrContext());
-
-        collider0.setHalfExtents(0.5f, 0.5f, 0.5f);
-        rootCube.attachCollider(collider0);
-        collider1.setHalfExtents(0.5f, 0.5f, 0.5f);
-        childCube.attachCollider(collider1);
-
-        // Physics joint
-        SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), mass, 2);
-        SXRPhysicsJoint childJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, mass);
-
-        rootCube.attachComponent(rootJoint);
-        childCube.attachComponent(childJoint);
         return rootJoint;
     }
 

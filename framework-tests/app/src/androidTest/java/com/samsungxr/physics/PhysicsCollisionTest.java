@@ -36,6 +36,7 @@ public class PhysicsCollisionTest {
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
     private SXRCollisionMatrix mCollisionMatrix;
+    private boolean mEnableDebug = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -48,6 +49,12 @@ public class PhysicsCollisionTest {
         sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
         SXRWorld world = new SXRWorld(sxrTestUtils.getMainScene(), mCollisionMatrix);
+        if (mEnableDebug)
+        {
+            SXRNode debugDraw = world.setupDebugDraw();
+            sxrTestUtils.getMainScene().addNode(debugDraw);
+            world.setDebugMode(-1);
+        }
         world.setEnable(true);
     }
 

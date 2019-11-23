@@ -37,14 +37,14 @@ public class PhysicsSimulationTest {
     private static final String TAG = "PHYSICS";
     private SXRTestUtils sxrTestUtils;
     private Waiter mWaiter;
-    SXRWorld world;
-    SXRScene scene;
-    SXRContext context;
+    private SXRWorld world;
+    private SXRScene scene;
+    private SXRContext context;
     private SXRMesh cubeMesh = null;
     private SXRTexture cubeTexture = null;
-
     private SXRMesh sphereMesh = null;
     private SXRTexture sphereTexture = null;
+    private boolean mEnableDebug = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -59,6 +59,12 @@ public class PhysicsSimulationTest {
         scene = sxrTestUtils.getMainScene();
         scene.getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
         world = new SXRWorld(scene);
+        if (mEnableDebug)
+        {
+            SXRNode debugDraw = world.setupDebugDraw();
+            scene.addNode(debugDraw);
+            world.setDebugMode(-1);
+        }
     }
 
     @Test

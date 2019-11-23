@@ -48,6 +48,7 @@ public class PhysicsJointTest
     private static final String TAG = "PHYSICS";
     private SXRWorld mWorld;
     private SXRTexture mFloorTex;
+    private boolean mEnableDebug = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new
@@ -59,6 +60,12 @@ public class PhysicsJointTest
         sxrTestUtils = new SXRTestUtils(ActivityRule.getActivity());
         sxrTestUtils.waitForOnInit();
         mWorld = new SXRWorld(sxrTestUtils.getMainScene(), true);
+        if (mEnableDebug)
+        {
+            SXRNode debugDraw = mWorld.setupDebugDraw();
+            sxrTestUtils.getMainScene().addNode(debugDraw);
+            mWorld.setDebugMode(-1);
+        }
         SXRCameraRig rig = sxrTestUtils.getMainScene().getMainCameraRig();
         rig.setNearClippingDistance(0.5f);
         rig.setFarClippingDistance(50);
@@ -211,7 +218,7 @@ public class PhysicsJointTest
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
-        SXRNode ground = addGround(0, -8, 0);
+        SXRNode ground = addGround(scene, 0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
 
@@ -239,13 +246,12 @@ public class PhysicsJointTest
     @Test
     public void testSphericalMotor()
     {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
-        SXRPhysicsJointMotor motor = new SXRPhysicsJointMotor(sxrTestUtils.getSxrContext(), Float.MAX_VALUE);
-        SXRNode ground = addGround(0, -8, 0);
+        SXRPhysicsJointMotor motor = new SXRPhysicsJointMotor(sxrTestUtils.getSxrContext());
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
         AxisAngle4f rot = new AxisAngle4f((float) Math.PI / 4, new Vector3f(0, 0, 1));
@@ -257,7 +263,6 @@ public class PhysicsJointTest
         firstJoint.setPivot(pos1.x, pos1.y, pos1.z);
 
         rot.get(q);
-        scene.addNode(ground);
         scene.addNode(box);
         box.addChildObject(ball);
         sxrTestUtils.waitForXFrames(10);
@@ -286,13 +291,12 @@ public class PhysicsJointTest
     @Test
     public void testHingeMotor()
     {
-        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 4);
+        PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.REVOLUTE, 1, 10);
-        SXRPhysicsJointMotor motor = new SXRPhysicsJointMotor(sxrTestUtils.getSxrContext(), Float.MAX_VALUE);
-        SXRNode ground = addGround(0, -8, 0);
+        SXRPhysicsJointMotor motor = new SXRPhysicsJointMotor(sxrTestUtils.getSxrContext());
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
         AxisAngle4f rot = new AxisAngle4f((float) Math.PI / 4, new Vector3f(0, 0, 1));
@@ -301,7 +305,6 @@ public class PhysicsJointTest
         rot.get(q);
 
         firstJoint.setAxis(0, 0, 1);
-        scene.addNode(ground);
         scene.addNode(box);
         box.addChildObject(ball);
         box.attachComponent(rootJoint);
@@ -318,7 +321,7 @@ public class PhysicsJointTest
         SXRTransform t = ball.getTransform();
         Quaternionf r = new Quaternionf(t.getRotationX() - q.x,
                                         t.getRotationY() - q.y,
-                                        t.getRotationZ() -q.z,
+                                        t.getRotationZ() - q.z,
                                         t.getRotationW() - q.w);
 
         mWaiter.assertTrue(r.lengthSquared() < 0.0001f);
@@ -389,7 +392,8 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
 
-        SXRNode ground = addGround(0f, -8, 0);
+        SXRScene scene = sxrTestUtils.getMainScene();
+        SXRNode ground = addGround(scene, 0f, -8, 0);
         SXRNode box1 = addCube(3, -2.5f, -15);
         SXRNode box2 = addCube(-3, 0, 5);
         SXRPhysicsJoint body1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
@@ -398,8 +402,7 @@ public class PhysicsJointTest
         body2.setPivot(3, 0, -5);
         box1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
         box1.addChildObject(box2);
-        sxrTestUtils.getMainScene().addNode(ground);
-        sxrTestUtils.getMainScene().addNode(box1);
+        scene.addNode(box1);
         box1.setName("cube1");
         box2.setName("cube2");
         box1.attachComponent(body1);
@@ -471,7 +474,7 @@ public class PhysicsJointTest
         return sphereObject;
     }
 
-    private SXRNode addGround(float x, float y, float z)
+    private SXRNode addGround(SXRScene scene, float x, float y, float z)
     {
         SXRContext ctx = sxrTestUtils.getSxrContext();
         SXRMaterial mtl = new SXRMaterial(ctx, SXRMaterial.SXRShaderType.Phong.ID);
@@ -482,6 +485,7 @@ public class PhysicsJointTest
         mtl.setMainTexture(mFloorTex);
         ground.getTransform().setPosition(x, y, z);
         ground.setName("ground");
+        scene.addNode(ground);
         collider.setHalfExtents(0.5f, 0.5f, 0.5f);
         ground.attachCollider(collider);
         body.setRestitution(0.5f);
