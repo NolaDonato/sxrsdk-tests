@@ -1,6 +1,6 @@
 package com.samsungxr.performance;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import net.jodah.concurrentunit.Waiter;
 

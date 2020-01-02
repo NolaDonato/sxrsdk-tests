@@ -8,8 +8,12 @@ if(file("../../../sxrsdk-demos/common.gradle").exists()) {
 
 
 android {
+    compileSdkVersion 28
     defaultConfig {
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion 23
+        targetSdkVersion 28
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
             cmake {
@@ -56,10 +60,10 @@ dependencies {
         implementation "com.samsungxr.widgetlib:widgetLib:$sxrVersion"
         implementation "com.samsungxr.physics:sxr-physics:$sxrVersion"
     }
-    androidTestImplementation 'com.android.support:support-annotations:23.+'
-    androidTestImplementation 'com.android.support.test:runner:0.4.1'
-    androidTestImplementation 'com.android.support.test:rules:0.4.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestImplementation "androidx.annotation:annotation:1.0.0"
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'net.jodah:concurrentunit:0.4.2'
     implementation project(path: ':sxr-unittestutils')
 }

@@ -1,7 +1,7 @@
 package com.samsungxr.physics;
 
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.samsungxr.SXRAndroidResource;
 import com.samsungxr.SXRBoxCollider;
@@ -218,13 +218,12 @@ public class PhysicsJointTest
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
-        SXRNode ground = addGround(scene, 0, -8, 0);
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0, -8, 0);7
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
 
         firstJoint.setPivot(0, 2, 0);
         ball.getTransform().rotateByAxisWithPivot(-30, 0, 0, 1, 0, 0, 0);
-        scene.addNode(ground);
         scene.addNode(box);
         box.addChildObject(ball);
         box.attachComponent(rootJoint);
@@ -303,7 +302,6 @@ public class PhysicsJointTest
         Quaternionf q = new Quaternionf();
 
         rot.get(q);
-
         firstJoint.setAxis(0, 0, 1);
         scene.addNode(box);
         box.addChildObject(ball);
@@ -360,7 +358,7 @@ public class PhysicsJointTest
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
         float dist = boxPos.sub(ballPos).length();
-        mWorld.setEnable(true);
+        mWorld.enable();
 
         listener.waitForXSteps(100);
         ballMtx = ballTrans.getLocalModelMatrix4f();
@@ -392,8 +390,7 @@ public class PhysicsJointTest
         PhysicsEventHandler listener = new PhysicsEventHandler(sxrTestUtils, 3);
         mWorld.getEventReceiver().addListener(listener);
 
-        SXRScene scene = sxrTestUtils.getMainScene();
-        SXRNode ground = addGround(scene, 0f, -8, 0);
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -8, 0);
         SXRNode box1 = addCube(3, -2.5f, -15);
         SXRNode box2 = addCube(-3, 0, 5);
         SXRPhysicsJoint body1 = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 0, 2);
@@ -402,7 +399,7 @@ public class PhysicsJointTest
         body2.setPivot(3, 0, -5);
         box1.getRenderData().getMaterial().setDiffuseColor(1, 0, 0, 1);
         box1.addChildObject(box2);
-        scene.addNode(box1);
+        sxrTestUtils.getMainScene().addNode(box1);
         box1.setName("cube1");
         box2.setName("cube2");
         box1.attachComponent(body1);

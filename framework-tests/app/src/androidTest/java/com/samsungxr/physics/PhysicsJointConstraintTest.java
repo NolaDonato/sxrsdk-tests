@@ -1,6 +1,6 @@
 package com.samsungxr.physics;
 
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.rule.ActivityTestRule;
 
 import com.samsungxr.SXRAndroidResource;
 import com.samsungxr.SXRBoxCollider;

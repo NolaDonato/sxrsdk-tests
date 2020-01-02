@@ -1,8 +1,8 @@
 package com.samsungxr.physics;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 import android.content.res.AssetManager;
 
 import com.samsungxr.SXRAndroidResource;
@@ -27,12 +27,7 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-/**
- * Instrumentation test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
-@RunWith(AndroidJUnit4.class)
+
 public class PhysicsLoaderTest
 {
     private SXRTestUtils sxrTestUtils;
@@ -65,7 +60,10 @@ public class PhysicsLoaderTest
 
                 if (world != mWorld)
                 {
-                    world.getSXRContext().getMainScene().addNode(root);
+                    if (root.getParent() == null)
+                    {
+                        world.getSXRContext().getMainScene().addNode(root);
+                    }
                     mWorld.merge(world);
                 }
                 mWorld.enable();
@@ -103,7 +101,7 @@ public class PhysicsLoaderTest
         createFloor(context);
         mWorld.disable();
 
-        SXRNode debugDraw = mWorld.setupDebugDraw();
+        SXRNode debugDraw = mWorld.setupDebugDraw(0);
         scene.addNode(debugDraw);
         mWorld.setDebugMode(-1);
         mLoader = new SXRPhysicsLoader(sxrTestUtils.getSxrContext(), mAssetManager);
@@ -113,7 +111,7 @@ public class PhysicsLoaderTest
         world = new SXRWorld(root, false);
         root.attachComponent(world);
         r = new SXRAndroidResource(context, "scene3.bullet");
-        mLoader.loadPhysics(world, r, false);
+        mLoader.loadPhysics(world, r, null);
         sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(5);
         world.disable();
@@ -131,7 +129,7 @@ public class PhysicsLoaderTest
         createFloor(context);
         mWorld.disable();
 
-        SXRNode debugDraw = mWorld.setupDebugDraw();
+        SXRNode debugDraw = mWorld.setupDebugDraw(0);
         scene.addNode(debugDraw);
         mWorld.setDebugMode(-1);
         mLoader = new SXRPhysicsLoader(context, mAssetManager);
@@ -161,14 +159,14 @@ public class PhysicsLoaderTest
         createFloor(context);
         mWorld.disable();
 
-        SXRNode debugDraw = mWorld.setupDebugDraw();
+        SXRNode debugDraw = mWorld.setupDebugDraw(0);
         scene.addNode(debugDraw);
         mWorld.setDebugMode(-1);
 
         mLoader = new SXRPhysicsLoader(sxrTestUtils.getSxrContext(), mAssetManager);
         mLoader.setMultiBody(false);
         mLoader.getEventReceiver().addListener(mLoadHandler);
-        mLoader.loadPhysics(world, r, false);
+        mLoader.loadPhysics(world, r, null);
         sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(5);
         mWorld.disable();
@@ -185,7 +183,7 @@ public class PhysicsLoaderTest
         createFloor(context);
         mWorld.disable();
 
-        SXRNode debugDraw = mWorld.setupDebugDraw();
+        SXRNode debugDraw = mWorld.setupDebugDraw(0);
         scene.addNode(debugDraw);
         mWorld.setDebugMode(-1);
 
@@ -213,3 +211,4 @@ public class PhysicsLoaderTest
         return floor;
     }
 }
+

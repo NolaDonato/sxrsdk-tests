@@ -1,7 +1,7 @@
 package com.samsungxr.physics;
 
-import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 
 import net.jodah.concurrentunit.Waiter;
 
@@ -81,13 +81,13 @@ public class PhysicsSimulationTest {
             SXRBoxCollider boxCollider = new SXRBoxCollider(context);
             boxCollider.setHalfExtents(0.5f, 0.5f, 0.5f);
             objects[i] = meshWithTexture("cube.obj", "cube.jpg");
-            objects[i].getTransform().setPosition(0.0f -i, 6.0f, -10.0f - (2.0f*i));
+            objects[i].getTransform().setPosition(0.0f - i, 6.0f, -10.0f - (2.0f * i));
             objects[i].attachCollider(boxCollider);
             switch (i) {
                 case 0 : bodies[i] = new SXRRigidBody(context); //object moves, rigid body doesn't
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
-                case 2 : bodies[i] = new SXRRigidBody(context, 1.0f);  //rigidbody is a "trigger  collider"
+                case 2 : bodies[i] = new SXRRigidBody(context, 1.0f);  //rigidbody is a "trigger collider"
                          bodies[i].setSimulationType(SXRRigidBody.STATIC);
                          break;
                 case 4 : bodies[i] = new SXRRigidBody(context);  //object moves, rigid body doesn't
@@ -96,7 +96,7 @@ public class PhysicsSimulationTest {
                 case 6 : bodies[i] = new SXRRigidBody(context, 1.0f); //rigid body is "sleeping", until it is hit by another
                          bodies[i].setSimulationType(SXRRigidBody.KINEMATIC);
                          break;
-                case 8 : bodies[i] = new SXRRigidBody(context, 1.0f); //rigid body is obbeys all external forces
+                case 8 : bodies[i] = new SXRRigidBody(context, 1.0f); //rigid body is obeys all external forces
                          bodies[i].setSimulationType(SXRRigidBody.DYNAMIC);
                          break;
             }
@@ -123,28 +123,29 @@ public class PhysicsSimulationTest {
 
         listener.waitForXSteps(600);
 
-        float d = (bodies[1].getTransform().getPositionY()
-                - bodies[0].getTransform().getPositionY()); //sphere is on top of the cube rigid body
+        float d = (bodies[1].getTransform().getPositionY() -
+                   bodies[0].getTransform().getPositionY()); //sphere is on top of the cube rigid body
         mWaiter.assertTrue(d > 0.5f);
 
-        d = (bodies[3].getTransform().getPositionY()
-                - bodies[2].getTransform().getPositionY()); //sphere went thru the cube
+        d = (bodies[3].getTransform().getPositionY() -
+             bodies[2].getTransform().getPositionY()); //sphere went thru the cube
         mWaiter.assertTrue(d <= 0.5f);
 
-        d = (bodies[5].getTransform().getPositionY()
-                - bodies[4].getTransform().getPositionY()); //sphere is on top of the cube rigid body
+        d = (bodies[5].getTransform().getPositionY() -
+             bodies[4].getTransform().getPositionY()); //sphere is on top of the cube rigid body
         mWaiter.assertTrue(d > 0.5f);
 
-        d = (bodies[7].getTransform().getPositionY()
-                - bodies[6].getTransform().getPositionY()); //sphere fell of the cube
+        d = (bodies[7].getTransform().getPositionY() -
+             bodies[6].getTransform().getPositionY()); //sphere fell of the cube
         mWaiter.assertTrue(d <= 0.5f);
 
-        d = (bodies[9].getTransform().getPositionY()
-                - bodies[8].getTransform().getPositionY()); //sphere fell of the cube
+        d = (bodies[9].getTransform().getPositionY() -
+             bodies[8].getTransform().getPositionY()); //sphere fell of the cube
         mWaiter.assertTrue(d <= 0.5f);
 
         for(int i = 0; i < 5; i++) {
-            mWaiter.assertTrue(objects[i*2].getTransform().getPositionX() == bodies[i*2].getTransform().getPositionX());
+            mWaiter.assertTrue(objects[i*2].getTransform().getPositionX() ==
+                                bodies[i*2].getTransform().getPositionX());
         }
         listener.waitForXSteps(60);
     }

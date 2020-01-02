@@ -1,6 +1,6 @@
 package com.samsungxr.physics;
 
-import android.support.test.rule.ActivityTestRule;
+import androidx.test.rule.ActivityTestRule;
 
 import net.jodah.concurrentunit.Waiter;
 
@@ -61,6 +61,7 @@ public class PhysicsConstraintTest {
         SXRContext ctx = sxrTestUtils.getSxrContext();
         ctx.getMainScene().getMainCameraRig().getTransform().setPosition(0.0f, 6.0f, 0.0f);
         world = new SXRWorld(sxrTestUtils.getMainScene());
+
         if (mEnableDebug)
         {
             SXRNode debugDraw = world.setupDebugDraw();
@@ -477,7 +478,7 @@ public class PhysicsConstraintTest {
 
         SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0f, -0.5f, -15f);
         SXRNode box = addCube(sxrTestUtils.getMainScene(), -3f, 0f, -10f, 1f);
-        SXRRigidBody boxBody = (SXRRigidBody)box.getComponent(SXRRigidBody.getComponentType());
+        SXRRigidBody boxBody = (SXRRigidBody) box.getComponent(SXRRigidBody.getComponentType());
         SXRNode ball = addSphere(sxrTestUtils.getMainScene(), 3f, 0f, -10f, 1f);
         SXRRigidBody ballBody = (SXRRigidBody) ball.getComponent(SXRRigidBody.getComponentType());
         final Vector3f pivotA = new Vector3f(0, 0f, 0f);
@@ -506,8 +507,6 @@ public class PhysicsConstraintTest {
         float dz = Math.abs(ballPos.z - boxPos.z);
         float roll = boxTrans.getRotationRoll() % (float) Math.PI;
         float boxY = boxTrans.getPositionY();
-        float dist = dx * dx + dy * dy + dz * dz;
-        float origDist = dist;
 
         boxBody.applyCentralForce(300f, 0, 0);
         listener.waitForXSteps(90);
@@ -516,9 +515,6 @@ public class PhysicsConstraintTest {
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
         dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
-        dz = Math.abs(ballPos.z - boxPos.z);
-        dist = dx * dx + dy * dy + dz * dz;
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
         mWaiter.assertTrue(Math.abs(dx) < 7);
@@ -531,8 +527,6 @@ public class PhysicsConstraintTest {
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
         dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
-        dz = Math.abs(ballPos.z - boxPos.z);
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
         mWaiter.assertTrue(Math.abs(dx) < 6);
@@ -547,27 +541,19 @@ public class PhysicsConstraintTest {
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
         dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
-        dz = Math.abs(ballPos.z - boxPos.z);
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
         mWaiter.assertTrue(Math.abs(dx) < 6);
         mWaiter.assertTrue(Math.abs(roll) < 4);
 
-        constraint.setLinearLowerLimits(0, 0, -1);
-        constraint.setLinearUpperLimits(0, 0, 1);
         boxBody.applyCentralForce(300f, 0, 0);
         listener.waitForXSteps(90);
         ballMtx = ballTrans.getLocalModelMatrix4f();
         boxMtx = boxTrans.getLocalModelMatrix4f();
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
-        dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
-        dist = dx * dx + dy * dy + dz * dz;
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
-        mWaiter.assertTrue(Math.abs(dist - origDist) < 1.5f);
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
         mWaiter.assertTrue(Math.abs(dz) < 7);
         mWaiter.assertTrue(Math.abs(roll) < 4);
@@ -578,15 +564,11 @@ public class PhysicsConstraintTest {
         boxMtx = boxTrans.getLocalModelMatrix4f();
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
-        dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);
         mWaiter.assertTrue(Math.abs(dz) < 6);
         mWaiter.assertTrue(Math.abs(roll) < 4);
-        constraint.setLinearLowerLimits(0, 0, -1);
-        constraint.setLinearUpperLimits(0, 0, 1);
 
         ballBody.applyCentralForce(-300f, 0, 0);
         listener.waitForXSteps(180);
@@ -594,8 +576,6 @@ public class PhysicsConstraintTest {
         boxMtx = boxTrans.getLocalModelMatrix4f();
         ballMtx.getTranslation(ballPos);
         boxMtx.getTranslation(boxPos);
-        dx = Math.abs(ballPos.x - boxPos.x);
-        dy = Math.abs(ballPos.y - boxPos.y);
         dz = Math.abs(ballPos.z - boxPos.z);
         roll = boxTrans.getRotationRoll() % (float) Math.PI;
         mWaiter.assertTrue(Math.abs(boxY - boxPos.y) < 1);

@@ -8,8 +8,11 @@ if(file("../../../sxrsdk-demos/common.gradle").exists()) {
 
 
 android {
-    defaultConfig {
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+     compileSdkVersion 28
+     defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 28
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         externalNativeBuild {
             cmake {
@@ -56,10 +59,10 @@ dependencies {
         implementation "com.samsungxr.x3d:x3d:$sxrVersion"
         implementation "com.samsungxr.script:script:$sxrVersion"
     }
-    androidTestImplementation 'com.android.support:support-annotations:23.+'
-    androidTestImplementation 'com.android.support.test:runner:0.4.1'
-    androidTestImplementation 'com.android.support.test:rules:0.4.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestImplementation "androidx.annotation:annotation:1.0.2"
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'net.jodah:concurrentunit:0.4.2'
     implementation project(path: ':sxr-unittestutils')
 }
@@ -67,7 +70,7 @@ dependencies {
 android.applicationVariants.all { variant ->
     if (variant.getBuildType().name == "debug") {
         task "configDevice${variant.name.capitalize()}" (type: Exec){
-            dependsOn variant.install
+            dependsOn variant.installProvider
 
             group = 'Device Configuration'
             description = 'Grants android permissions before running the application.'

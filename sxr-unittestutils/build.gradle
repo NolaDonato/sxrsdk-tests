@@ -7,18 +7,18 @@ allprojects {
             dirs '../../sxrsdk/SXR/sxr-libs'
         }
         maven {
-            url "https://maven.google.com"
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
         }
     }
 }
 
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 26
+        minSdkVersion 23
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -30,7 +30,7 @@ android {
     }
 }
 
-project.ext.jomlVersion = "1.9.1-SNAPSHOT"
+project.ext.jomlVersion = "1.9.3-SNAPSHOT"
 
 dependencies {
     implementation "org.joml:joml-android:${jomlVersion}"
@@ -43,5 +43,5 @@ dependencies {
     }
 
     implementation 'net.jodah:concurrentunit:0.4.2'
-    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation "androidx.appcompat:appcompat:1.0.2"
 }
