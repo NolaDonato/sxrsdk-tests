@@ -49,7 +49,7 @@ public class PhysicsWorldTest {
                 mWorld = new SXRWorld(sxrTestUtils.getMainScene());
                 if (mEnableDebug)
                 {
-                    SXRNode debugDraw = mWorld.setupDebugDraw();
+                    SXRNode debugDraw = mWorld.setupDebugDraw(0);
                     sxrTestUtils.getMainScene().addNode(debugDraw);
                     mWorld.setDebugMode(-1);
                 }

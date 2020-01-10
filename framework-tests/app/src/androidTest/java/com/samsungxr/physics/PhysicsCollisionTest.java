@@ -51,7 +51,7 @@ public class PhysicsCollisionTest {
         SXRWorld world = new SXRWorld(sxrTestUtils.getMainScene(), mCollisionMatrix);
         if (mEnableDebug)
         {
-            SXRNode debugDraw = world.setupDebugDraw();
+            SXRNode debugDraw = world.setupDebugDraw(0);
             sxrTestUtils.getMainScene().addNode(debugDraw);
             world.setDebugMode(-1);
         }

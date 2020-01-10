@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 
@@ -95,8 +97,10 @@ public class PhysicsLoaderTest
         SXRWorld world;
         SXRNode root = new SXRNode(context);
         SXRAndroidResource r;
+        Map<String, Object> loaderProperties = new HashMap<String, Object>();
 
-        scene.getMainCameraRig().getCenterCamera().getTransform().setPosition(0, 3, 40);
+        loaderProperties.put("LinkRigidBodies", true);
+        scene.getMainCameraRig().getCenterCamera().getTransform().setPosition(0, 3, 20);
         mWorld = new SXRWorld(sxrTestUtils.getMainScene());
         createFloor(context);
         mWorld.disable();
@@ -111,10 +115,10 @@ public class PhysicsLoaderTest
         world = new SXRWorld(root, false);
         root.attachComponent(world);
         r = new SXRAndroidResource(context, "scene3.bullet");
-        mLoader.loadPhysics(world, r, null);
+        mLoader.loadPhysics(world, r, loaderProperties);
         sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(5);
-        world.disable();
+        mWorld.disable();
         sxrTestUtils.screenShot(getClass().getSimpleName(), "loadBullet", mWaiter, mDoCompare);
     }
 
@@ -132,12 +136,14 @@ public class PhysicsLoaderTest
         SXRNode debugDraw = mWorld.setupDebugDraw(0);
         scene.addNode(debugDraw);
         mWorld.setDebugMode(-1);
+
         mLoader = new SXRPhysicsLoader(context, mAssetManager);
         mLoader.setMultiBody(true);
         mLoader.getEventReceiver().addListener(mLoadHandler);
         mLoader.loadPhysics(scene, "quadruped.bullet");
         sxrTestUtils.waitForAssetLoad();
         sxrTestUtils.waitForXFrames(5);
+        mWorld.disable();
         sxrTestUtils.screenShot(getClass().getSimpleName(), "loadBulletMultiBody", mWaiter, mDoCompare);
     }
 

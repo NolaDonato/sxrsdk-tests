@@ -33,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -62,7 +63,7 @@ public class PhysicsJointTest
         mWorld = new SXRWorld(sxrTestUtils.getMainScene(), true);
         if (mEnableDebug)
         {
-            SXRNode debugDraw = mWorld.setupDebugDraw();
+            SXRNode debugDraw = mWorld.setupDebugDraw(0);
             sxrTestUtils.getMainScene().addNode(debugDraw);
             mWorld.setDebugMode(-1);
         }
@@ -218,7 +219,7 @@ public class PhysicsJointTest
         SXRScene scene = sxrTestUtils.getMainScene();
         SXRPhysicsJoint rootJoint = new SXRPhysicsJoint(sxrTestUtils.getSxrContext(), 10, 2);
         SXRPhysicsJoint firstJoint = new SXRPhysicsJoint(rootJoint, SXRPhysicsJoint.SPHERICAL, 1, 10);
-        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0, -8, 0);7
+        SXRNode ground = addGround(sxrTestUtils.getMainScene(), 0, -8, 0);
         SXRNode box = addCube(0, 3, -10);
         SXRNode ball = addSphere(0, -2, 0);
 
@@ -478,6 +479,12 @@ public class PhysicsJointTest
         SXRNode ground = new SXRCubeNode(ctx, true, mtl, new Vector3f(100, 10, 100));
         SXRBoxCollider collider = new SXRBoxCollider(ctx);
         SXRRigidBody body = new SXRRigidBody(ctx, 0.0f);
+        float[] scaleMatrix = new float[16];
+
+        Arrays.fill(scaleMatrix, 0);
+        scaleMatrix[12] = 100;
+        scaleMatrix[13] = 10;
+        scaleMatrix[14] = 100;
 
         mtl.setMainTexture(mFloorTex);
         ground.getTransform().setPosition(x, y, z);
@@ -487,7 +494,7 @@ public class PhysicsJointTest
         ground.attachCollider(collider);
         body.setRestitution(0.5f);
         body.setFriction(1.0f);
-        body.setScale(100, 10, 100);
+        body.setColliderTransform(scaleMatrix);
         ground.attachComponent(body);
         return ground;
     }

@@ -1,0 +1,3 @@
+/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/monoscopicDebug/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/monoscopicDebug/arm64-v8a/CMakeFiles/rebuild_cache.dir
+/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/monoscopicDebug/arm64-v8a/CMakeFiles/framework-tests.dir

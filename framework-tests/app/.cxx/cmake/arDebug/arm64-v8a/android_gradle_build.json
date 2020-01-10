@@ -1,0 +1,41 @@
+
+{
+	"buildFiles" : 
+	[
+		"/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/src/main/cpp/CMakeLists.txt"
+	],
+	"cleanCommands" : 
+	[
+		"/home/nola.donato/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/arDebug/arm64-v8a --target clean"
+	],
+	"cppFileExtensions" : [ "cpp" ],
+	"libraries" : 
+	{
+		"framework-tests-Debug-arm64-v8a" : 
+		{
+			"abi" : "arm64-v8a",
+			"artifactName" : "framework-tests",
+			"buildCommand" : "/home/nola.donato/Android/Sdk/cmake/3.6.4111459/bin/cmake --build /home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/arDebug/arm64-v8a --target framework-tests",
+			"buildType" : "debug",
+			"files" : 
+			[
+				
+				{
+					"flags" : "  --target=aarch64-none-linux-android23 --gcc-toolchain=/home/nola.donato/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64 --sysroot=/home/nola.donato/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/sysroot  -Dframework_tests_EXPORTS -I/home/nola.donato/projects/SXR/sxrsdk/SXR/SDK/framework/src/main/jni -I/home/nola.donato/projects/SXR/sxrsdk/SXR/SDK/framework/src/main/jni/contrib -I/home/nola.donato/projects/SXR/sxrsdk/SXR/SDK/../../GearVRf/GVRf/Framework/framework/src/main/jni -I/home/nola.donato/projects/SXR/sxrsdk/SXR/SDK/../../GearVRf/GVRf/Framework/framework/src/main/jni/contrib  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fno-addrsig -Wa,--noexecstack -Wformat -Werror=format-security -stdlib=libc++  -std=c++11 -fexceptions -O0 -fno-limit-debug-info  -fPIC    -c ",
+					"src" : "/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/src/main/cpp/helpers.cpp",
+					"workingDirectory" : "/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/.cxx/cmake/arDebug/arm64-v8a"
+				}
+			],
+			"output" : "/home/nola.donato/projects/SXR/sxrsdk-tests/framework-tests/app/build/intermediates/cmake/arDebug/obj/arm64-v8a/libframework-tests.so",
+			"toolchain" : "11206029167462256490"
+		}
+	},
+	"toolchains" : 
+	{
+		"11206029167462256490" : 
+		{
+			"cCompilerExecutable" : "/home/nola.donato/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang",
+			"cppCompilerExecutable" : "/home/nola.donato/Android/Sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++"
+		}
+	}
+}

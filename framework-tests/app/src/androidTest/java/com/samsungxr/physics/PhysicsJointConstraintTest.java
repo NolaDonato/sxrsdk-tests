@@ -27,6 +27,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeoutException;
 
 public class PhysicsJointConstraintTest
@@ -54,7 +55,7 @@ public class PhysicsJointConstraintTest
         world = new SXRWorld(sxrTestUtils.getMainScene(), true);
         if (mEnableDebug)
         {
-            SXRNode debugDraw = world.setupDebugDraw();
+            SXRNode debugDraw = world.setupDebugDraw(0);
             sxrTestUtils.getMainScene().addNode(debugDraw);
             world.setDebugMode(-1);
         }
@@ -486,7 +487,12 @@ public class PhysicsJointConstraintTest
     private SXRNode addGround(SXRScene scene, float x, float y, float z) {
 
         SXRNode groundObject = new SXRCubeNode(sxrTestUtils.getSxrContext());
+        float[] scaleMatrix = new float[16];
 
+        Arrays.fill(scaleMatrix, 0);
+        scaleMatrix[12] = 100;
+        scaleMatrix[13] = 0.5f;
+        scaleMatrix[14] = 100;
         groundObject.getTransform().setScale(100f, 0.5f, 100f);
         groundObject.getTransform().setPosition(x, y, z);
         groundObject.setName("ground");
@@ -497,7 +503,6 @@ public class PhysicsJointConstraintTest
         groundObject.attachCollider(boxCollider);
 
         SXRRigidBody body = new SXRRigidBody(sxrTestUtils.getSxrContext(), 0.0f);
-        body.setScale(100, 0.5f, 100);
         groundObject.attachComponent(body);
         return groundObject;
     }

@@ -1,0 +1,2164 @@
+{
+  "Colliders": [
+    {
+      "Joint": "CHAIN00_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN00_00_JNT_HAIR", 
+      "AngularDamping": 0.10000000149011612, 
+      "LinearDamping": 0.10000000149011612,
+      "SpringStiffness": 0.55,
+      "SpringDamping": 0.5,
+      "AngularLimitMin":{
+        "X": 0.0,
+        "Y": -9.0,
+        "Z": 0.0
+      },
+      "AngularLimitMax":{
+        "X": 0.0,
+        "Y": 9.0,
+        "Z": 0.0
+      },
+      "LinearLimitMin":{
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "LinearLimitMax":{
+        "X": 0.0,
+        "Y": 0.0,
+        "Z": 0.0
+      },
+      "Colliders": [
+        {
+          "HalfHeight": 0.094594144821167, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.06756724834442139, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.09502833842756389, 
+            "X": -5.604776857903726e-08, 
+            "Z": -0.6477783322073658, 
+            "W": 0.755878857501873
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN00_01_JNT_HAIR", 
+      "ParentName": "CHAIN00_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN00_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.06159036636352539, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.04399312019348144, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.12194661150017949, 
+            "X": -8.59014043924633e-08, 
+            "Z": -0.7242362243017412, 
+            "W": 0.678683221652617
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN00_02_JNT_HAIR", 
+      "ParentName": "CHAIN00_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN00_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.10031403541564941, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.0716528844833374, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.04802702001483383, 
+            "X": 2.9968961017673434e-08, 
+            "Z": -0.67098165803954, 
+            "W": 0.7399169006875053
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN00_03_JNT_HAIR", 
+      "ParentName": "CHAIN00_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN00_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN01_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN01_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.16209672927856444, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.11578337669372558, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.2356625157955731, 
+            "X": -1.4085438769517733e-07, 
+            "Z": -0.6063379964940976, 
+            "W": 0.7594849653919458
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN01_01_JNT_HAIR", 
+      "ParentName": "CHAIN01_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN01_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.1107824420928955, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07913032054901123, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.13512645132280077, 
+            "X": -8.239129616061103e-08, 
+            "Z": -0.670215993321521, 
+            "W": 0.7297611694581637
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN01_02_JNT_HAIR", 
+      "ParentName": "CHAIN01_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN01_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.06467213153839112, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.04619438171386719, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.10818550487780695, 
+            "X": -5.87378962413343e-08, 
+            "Z": -0.5827115032641864, 
+            "W": 0.805445963735571
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN01_03_JNT_HAIR", 
+      "ParentName": "CHAIN01_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN01_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN02_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN02_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.18806190490722657, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.1343299388885498, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.14324912516756738, 
+            "X": -9.24172752631014e-08, 
+            "Z": -0.6858253369263485, 
+            "W": 0.7135287628179949
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN02_01_JNT_HAIR", 
+      "ParentName": "CHAIN02_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN02_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09949969291687012, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07107120990753174, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.13623029588777139, 
+            "X": -8.984534126399435e-08, 
+            "Z": -0.6820086930979684, 
+            "W": 0.7185439784878329
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN02_02_JNT_HAIR", 
+      "ParentName": "CHAIN02_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN02_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.0605600118637085, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.04325715065002442, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.05770196315007137, 
+            "X": -2.9698396148553075e-08, 
+            "Z": -0.5511631738542725, 
+            "W": 0.8323999274600591
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN02_03_JNT_HAIR", 
+      "ParentName": "CHAIN02_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN02_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN03_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN03_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09446129798889161, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.06747235774993897, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.1683301614209722, 
+            "X": -9.909108941719147e-08, 
+            "Z": -0.6325414887314378, 
+            "W": 0.7560133740810383
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN03_01_JNT_HAIR", 
+      "ParentName": "CHAIN03_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN03_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.11257658958435059, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.08041184425354003, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.08345562459386065, 
+            "X": -6.175761037285898e-08, 
+            "Z": -0.7414136953159788, 
+            "W": 0.6658384872636529
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN03_02_JNT_HAIR", 
+      "ParentName": "CHAIN03_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN03_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.11217938423156738, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.08012812614440917, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.08625729392733585, 
+            "X": -6.087209903499202e-08, 
+            "Z": -0.7415953798764587, 
+            "W": 0.6652788676864915
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN03_03_JNT_HAIR", 
+      "ParentName": "CHAIN03_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN03_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN04_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN04_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09283297538757325, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.06630926609039306, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.29356147946295635, 
+            "X": -1.9781771815052807e-07, 
+            "Z": -0.6696427810211895, 
+            "W": 0.6822024652562378
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN04_01_JNT_HAIR", 
+      "ParentName": "CHAIN04_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN04_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.10079023361206055, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07199302196502685, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.014012380219667098, 
+            "X": 9.301667164805794e-09, 
+            "Z": -0.7204554395421334, 
+            "W": 0.6933596561920304
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN04_02_JNT_HAIR", 
+      "ParentName": "CHAIN04_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN04_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.11234752655029297, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.08024823188781738, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.11296619706579358, 
+            "X": -8.417903848284558e-08, 
+            "Z": -0.7272753192501235, 
+            "W": 0.6769854121989013
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN04_03_JNT_HAIR", 
+      "ParentName": "CHAIN04_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN04_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN05_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN05_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.08515764236450195, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.06082688808441162, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.27759451817990294, 
+            "X": -2.051125154167721e-07, 
+            "Z": -0.7015599101377664, 
+            "W": 0.6563192637458652
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN05_01_JNT_HAIR", 
+      "ParentName": "CHAIN05_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN05_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.1130161190032959, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.08072579383850098, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.00021381924041743015, 
+            "X": 1.3320387631451935e-10, 
+            "Z": -0.6596529035056214, 
+            "W": 0.7515703567716969
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN05_02_JNT_HAIR", 
+      "ParentName": "CHAIN05_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN05_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.11061728477478028, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07901234626770019, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.13066218633741666, 
+            "X": -8.70400320013287e-08, 
+            "Z": -0.7156257824764215, 
+            "W": 0.6861538694174422
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN05_03_JNT_HAIR", 
+      "ParentName": "CHAIN05_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN05_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN06_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN06_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.06472541809082032, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.046232442855834964, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.13708613858685859, 
+            "X": -9.793838320892867e-08, 
+            "Z": -0.7228728192599746, 
+            "W": 0.6772460983885187
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN06_01_JNT_HAIR", 
+      "ParentName": "CHAIN06_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN06_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09155291557312012, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.06539493560791015, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.07403632741986782, 
+            "X": -4.5757604774654403e-08, 
+            "Z": -0.6677489971940721, 
+            "W": 0.7406955507956606
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN06_02_JNT_HAIR", 
+      "ParentName": "CHAIN06_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN06_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.11285659790039063, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.08061185836791993, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.050620399212152084, 
+            "X": -3.127774010278084e-08, 
+            "Z": -0.6698450757702116, 
+            "W": 0.7407733456665411
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN06_03_JNT_HAIR", 
+      "ParentName": "CHAIN06_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN06_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN07_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN07_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.05859958648681641, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.041856846809387206, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.17389133785829575, 
+            "X": -1.35979889057114e-07, 
+            "Z": -0.7799563226508963, 
+            "W": 0.6011904335356015
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN07_01_JNT_HAIR", 
+      "ParentName": "CHAIN07_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN07_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09218808174133301, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.0658486270904541, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.12352568198733424, 
+            "X": -6.74493997113168e-08, 
+            "Z": -0.6249899479316985, 
+            "W": 0.7707976199197115
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN07_02_JNT_HAIR", 
+      "ParentName": "CHAIN07_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN07_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.09976651191711426, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07126179218292236, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.10082621085416227, 
+            "X": -6.822083904040044e-08, 
+            "Z": -0.7011259895451359, 
+            "W": 0.7058728086483721
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN07_03_JNT_HAIR", 
+      "ParentName": "CHAIN07_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN07_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN08_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN08_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.0803135108947754, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.05736679553985596, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.13939063409555896, 
+            "X": -1.0070315094312665e-07, 
+            "Z": -0.7601232902851537, 
+            "W": 0.634651742842088
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN08_01_JNT_HAIR", 
+      "ParentName": "CHAIN08_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN08_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.08550335884094239, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.061073832511901856, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.25341306426211213, 
+            "X": -1.718001608752573e-07, 
+            "Z": -0.6582937230943385, 
+            "W": 0.7088238095576724
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN08_02_JNT_HAIR", 
+      "ParentName": "CHAIN08_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN08_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.10906084060668945, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.0779006004333496, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.21336777747280117, 
+            "X": -1.5884971424351413e-07, 
+            "Z": -0.7279302568193033, 
+            "W": 0.6516070385924901
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN08_03_JNT_HAIR", 
+      "ParentName": "CHAIN08_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN08_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN09_00_JNT_HAIR", 
+      "ParentName": "torso_head", 
+      "Mass": 0.5429999828338623, 
+      "Name": "CHAIN09_00_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.08237651824951173, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.058840370178222655, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.06023982574246393, 
+            "X": -4.0170212645823655e-08, 
+            "Z": -0.7137246769735022, 
+            "W": 0.6978311034008055
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN09_01_JNT_HAIR", 
+      "ParentName": "CHAIN09_00_JNT_HAIR", 
+      "Mass": 0.16290000081062317, 
+      "Name": "CHAIN09_01_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.07157262325286866, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.05112330436706543, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.06972766528475605, 
+            "X": -4.1533566488838325e-08, 
+            "Z": -0.6876642090532342, 
+            "W": 0.7226728085939897
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN09_02_JNT_HAIR", 
+      "ParentName": "CHAIN09_01_JNT_HAIR", 
+      "Mass": 0.10859999805688858, 
+      "Name": "CHAIN09_02_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.10147958755493164, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.07248542308807374, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": 0.019604066524873873, 
+            "X": -1.4361671376444951e-08, 
+            "Z": -0.7707894162739586, 
+            "W": 0.6367883135985918
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }, 
+    {
+      "Joint": "CHAIN09_03_JNT_HAIR", 
+      "ParentName": "CHAIN09_02_JNT_HAIR", 
+      "Mass": 0.05429999902844429, 
+      "Name": "CHAIN09_03_JNT_HAIR", 
+          "AngularDamping": 0.10000000149011612, 
+          "LinearDamping": 0.10000000149011612,
+          "SpringStiffness": 0.55,
+          "SpringDamping": 0.5,
+          "AngularLimitMin":{
+            "X": 0.0,
+            "Y": -9.0,
+            "Z": 0.0
+          },
+          "AngularLimitMax":{
+            "X": 0.0,
+            "Y": 9.0,
+            "Z": 0.0
+          },
+          "LinearLimitMin":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "LinearLimitMax":{
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+      "Colliders": [
+        {
+          "HalfHeight": 0.035, 
+          "Direction": 0, 
+          "Scale": {
+            "Y": 1.0, 
+            "X": 1.0, 
+            "Z": 1.0
+          }, 
+          "Radius": 0.01, 
+          "Offset": {
+            "Y": -0.025, 
+            "X": 0.0, 
+            "Z": 0.0
+          }, 
+          "Rotation": {
+            "Y": -0.007243002534853733, 
+            "X": 4.861471765947589e-09, 
+            "Z": -0.7070676348797608, 
+            "W": 0.7071088308173089
+          }, 
+          "Type": "Capsule"
+        }
+      ]
+    }
+  ]
+}

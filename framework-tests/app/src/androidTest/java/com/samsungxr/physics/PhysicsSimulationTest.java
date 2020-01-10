@@ -61,7 +61,7 @@ public class PhysicsSimulationTest {
         world = new SXRWorld(scene);
         if (mEnableDebug)
         {
-            SXRNode debugDraw = world.setupDebugDraw();
+            SXRNode debugDraw = world.setupDebugDraw(0);
             scene.addNode(debugDraw);
             world.setDebugMode(-1);
         }
