@@ -37,7 +37,7 @@ public class PhysicsLoaderTest
     private SXRWorld mWorld;
     private AssetManager mAssetManager;
     private SXRPhysicsLoader mLoader;
-    private boolean mDoCompare = true;
+    private boolean mDoCompare = false;
 
     @Rule
     public ActivityTestRule<SXRTestableActivity> ActivityRule = new

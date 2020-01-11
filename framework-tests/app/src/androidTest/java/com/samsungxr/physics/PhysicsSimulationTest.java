@@ -210,7 +210,7 @@ public class PhysicsSimulationTest {
 
         distance = cube.getTransform().getPositionZ();
         pitch = cube.getTransform().getRotationPitch();
-        body.applyCentralForce(0,0,-1);
+        body.applyCentralForce(0, 0, -1);
         listener.waitForXSteps(60);
         deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
         deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
@@ -228,17 +228,16 @@ public class PhysicsSimulationTest {
 
         distance = cube.getTransform().getPositionZ();
         pitch = cube.getTransform().getRotationPitch();
-        body.applyCentralImpulse(0,0,-0.02f);
+        body.applyCentralImpulse(0, 0, -0.02f);
         listener.waitForXSteps(120);
         deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
         deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());
         mWaiter.assertTrue(deltaZ > 0.0001f);
-        mWaiter.assertTrue(deltaPitch < 1);
+        mWaiter.assertTrue(deltaPitch < 4);
 
         distance = cube.getTransform().getPositionZ();
         pitch = cube.getTransform().getRotationPitch();
-        body.applyImpulse(0,0, -0.02f,
-                0.0f, 0.5f, 0.0f);
+        body.applyImpulse(0,0, -0.02f, 0.0f, 0.5f, 0.0f);
         listener.waitForXSteps(120);
         deltaZ = Math.abs(distance - cube.getTransform().getPositionZ());
         deltaPitch = Math.abs(pitch - cube.getTransform().getRotationPitch());

@@ -479,12 +479,6 @@ public class PhysicsJointTest
         SXRNode ground = new SXRCubeNode(ctx, true, mtl, new Vector3f(100, 10, 100));
         SXRBoxCollider collider = new SXRBoxCollider(ctx);
         SXRRigidBody body = new SXRRigidBody(ctx, 0.0f);
-        float[] scaleMatrix = new float[16];
-
-        Arrays.fill(scaleMatrix, 0);
-        scaleMatrix[12] = 100;
-        scaleMatrix[13] = 10;
-        scaleMatrix[14] = 100;
 
         mtl.setMainTexture(mFloorTex);
         ground.getTransform().setPosition(x, y, z);
@@ -494,7 +488,7 @@ public class PhysicsJointTest
         ground.attachCollider(collider);
         body.setRestitution(0.5f);
         body.setFriction(1.0f);
-        body.setColliderTransform(scaleMatrix);
+        body.setScale(new Vector3f(100, 10, 100));
         ground.attachComponent(body);
         return ground;
     }
